@@ -16,6 +16,8 @@ def get_headers_and_sizes_from_data(data):
     for item in data:
         for key, value in item.items():
             size = max(map(lambda x:len(x[key]), data))
+            if len(key) > size:
+                size = len(key)
             key_size_list.append({"size": size, "name": key})
         break
     return key_size_list
@@ -67,7 +69,15 @@ def format_data_line(data, headers):
     return data_row
 
 
+def _data_to_string(data):
+    new_data = []
+    for item in data:
+        new_data.append({k: str(v) for k,v in item.items()})
+    return new_data
+
+
 def format_lines(data):
+    data = _data_to_string(data)
     headers_and_sizes = get_headers_and_sizes_from_data(data)
     lines_to_print = []
     lines_to_print.append(format_top_line(headers_and_sizes))

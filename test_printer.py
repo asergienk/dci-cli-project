@@ -133,3 +133,19 @@ def test_format_lines():
         "│ f05b3da7-701b-40bd-87e8-780693a07b13 │ Bob Dylan │ bdylan@example.org │",
         "└──────────────────────────────────────┴───────────┴────────────────────┘",
     ]
+
+
+def test_format_lines_with_int():
+    data = [
+        {
+            "name": "Jonh Doe",
+            "age": 32,
+        }
+    ]
+    assert format_lines(data) ==  [
+        "┌──────────┬─────┐",
+        "│ name     │ age │",
+        "├──────────┼─────┤",
+        "│ Jonh Doe │ 32  │",
+        "└──────────┴─────┘",
+    ]
