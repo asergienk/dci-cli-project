@@ -1,0 +1,10 @@
+playing.py
+script.py
+todo.md
+tox.ini
+setup.py
+venv
+__pycache__
+.tox
+.vscode/
+cli_asergien.egg-info/
