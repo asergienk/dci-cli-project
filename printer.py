@@ -23,8 +23,22 @@ def get_headers_and_sizes_from_data(data):
     return key_size_list
 
 
+def get_headers_and_sizes_adjusted_to_console(key_size_list, console_width):
+    i = 0
+    sum_of_sizes = 0
+    proportions = []
+    for item in key_size_list:
+        sum_of_sizes += int(item["size"])
+
+    for item in key_size_list:
+        proportions.append(int(item["size"])/sum_of_sizes)
+        item["size"] = (int(console_width * proportions[i]))
+        i += 1
+
+    return key_size_list
+
+
 def format_top_line(headers):
-    print(headers)
     top_line = []
     for header in headers:
         column_width = header["size"] + 2
@@ -90,3 +104,5 @@ def format_lines(data):
     lines_to_print.append(format_data_line(data[-1], headers_and_sizes))
     lines_to_print.append(format_bottom_line(headers_and_sizes))
     return lines_to_print
+
+

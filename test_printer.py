@@ -5,6 +5,7 @@ from printer import format_bottom_line
 from printer import format_separator_line
 from printer import format_data_line
 from printer import format_lines
+from printer import get_headers_and_sizes_adjusted_to_console
 
 
 def test_get_headers_and_sizes_from_data():
@@ -107,6 +108,7 @@ def test_format_data_line():
         },
     ]
     headers = get_headers_and_sizes_from_data(data)
+
     assert format_data_line(data[0], headers) == "│ 6018975a-dde7-4666-9436-b171c5a11dde │ Jonh Doe  │ jdoe@example.org   │"
 
 
@@ -149,3 +151,35 @@ def test_format_lines_with_int():
         "│ Jonh Doe │ 32  │",
         "└──────────┴─────┘",
     ]
+
+
+def test_get_headers_and_sizes_adjusted_to_console():
+    data = [
+        { "size": 36, "name": "id" },
+        { "size": 9, "name": "name" },
+        { "size": 18, "name": "email" },
+    ]
+
+    expected_headers = [
+        { "size": 18, "name": "id" },
+        { "size": 4, "name": "name" },
+        { "size": 9, "name": "email" },
+    ]
+
+    assert get_headers_and_sizes_adjusted_to_console(data, console_width=32) == expected_headers
+
+
+    data = [
+        { "size": 36, "name": "id" },
+        { "size": 9, "name": "name" },
+        { "size": 18, "name": "email" },
+    ]
+
+    expected_headers = [
+        { "size": 26, "name": "id" },
+        { "size": 6, "name": "name" },
+        { "size": 13, "name": "email" },
+    ]
+
+    assert get_headers_and_sizes_adjusted_to_console(data, console_width=46) == expected_headers
+
