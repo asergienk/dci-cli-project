@@ -77,7 +77,8 @@ def format_separator_line(headers):
 def format_data_line(data, headers):
     data_row = []
     for header in headers:
-        column_width = header["size"] + 2
+        column_width = header["size"] 
+        data[header["name"]] = adjust_text(column_width, data[header["name"]])
         data_row.append(data[header["name"]].ljust(column_width - 1).rjust(column_width))
     data_row = vertical_line + vertical_line.join(data_row) + vertical_line
     return data_row
@@ -90,40 +91,43 @@ def _data_to_string(data):
     return new_data
 
 
-#IN PROGRESS
-#pass headers and sizes ; data - need only values; 
-def adjust_line(column_width, header):
+
+def adjust_text(column_width, string):
+    new_col_width = column_width - 2 #to have a space at the beginning and at the end
     char_num_so_far=0 
     line = []
-    for word in s.split():
-        if char_num_so_far + len(word) + 1 <= column_width:
+    line_to_print = []
+    for word in string.split():
+        if char_num_so_far + len(word) + 1 <= new_col_width:
             line.append(word)
             char_num_so_far += len(word) + 1
         else:
-            char_left = column_width - char_num_so_far
+            char_left = new_col_width - char_num_so_far 
             if char_left == 1:
                 line.append(word[char_left-1])
             if char_left > 1:
-                line.append(word[:char_left-1])
-            print(" ".join(line))
+                line.append(word[:char_left])
+            line_to_print.append(" ".join(line))
             char_num_so_far = 0
             line = []
             new_word = word[char_left:]
             length = len(new_word)
             start = 0
-            end = column_width
+            end = new_col_width
             while length > 0:
-                if length <= column_width:
+                if length < new_col_width:
                     line.append(new_word[start:start+length])
-                    char_num_so_far = length
+                    char_num_so_far = length + 1
                     break
-                print(new_word[start:end])
-                length -= column_width
-                start += column_width 
-                end = start + column_width
+                line_to_print.append(new_word[start:end])
+                length -= new_col_width
+                start += new_col_width 
+                end = start + new_col_width
 
     if line: 
-        print(" ".join(line))
+        line_to_print.append(" ".join(line))
+    
+    return line_to_print
 
 
 
@@ -145,7 +149,6 @@ def adjust_line(column_width, header):
 
 
 
-
 def format_lines_adjusted_to_console(data):
     console_width = 32
     data = _data_to_string(data)
@@ -164,11 +167,11 @@ def format_lines_adjusted_to_console(data):
     lines_to_print.append(format_bottom_line(headers_and_sizes_adjusted))
     return lines_to_print
 
-
+    
 #IN PROGRESS
 # lines = format_lines_adjusted_to_console(data)
 # for line in lines:
-#     line = adjust_line(line)
+#     line = adjust_text(line)
 #     print(line)
 
 
