@@ -75,26 +75,50 @@ def format_separator_line(headers):
 
 
 
-def format_data_line(data, headers):
-    data_row = []
-    for header in headers:
-        column_width = header["size"] + 2
-        data_row.append(data[header["name"]].ljust(column_width - 1).rjust(column_width))
-    data_row = vertical_line + vertical_line.join(data_row) + vertical_line
-    return data_row
-
-
-
-
-
 # def format_data_line(data, headers):
 #     data_row = []
 #     for header in headers:
-#         column_width = header["size"] 
-#         data[header["name"]] = adjust_text(data[header["name"]], column_width)
+#         column_width = header["size"] + 2
 #         data_row.append(data[header["name"]].ljust(column_width - 1).rjust(column_width))
 #     data_row = vertical_line + vertical_line.join(data_row) + vertical_line
 #     return data_row
+
+
+def get_num_of_lines(data_row):
+    num_of_new_lines = []
+    for string in data_row:
+        num_of_new_lines.append(string.count("\n"))
+    num_of_lines = max(num_of_new_lines) + 1
+    return num_of_lines
+
+def split_strings(data_row):
+    splitted_strings = []
+    for string in data_row:
+        splitted_strings.append(string.split("\n"))
+    return splitted_strings
+
+def creating_line_content(splitted_strings, i):
+    line = []
+    for item in splitted_strings:
+        line.append(item[i])
+        continue
+    
+    return line
+
+
+def format_data_line(row, headers):
+    data_row = []
+    for header in headers:
+        column_width = header["size"] 
+        data_row.append(adjust_text(row[0][header["name"]], column_width)) #['6018975a-dde7-46\n66-9436-b171c5a1\n1dde', 'Jo\nnh\nDo\ne', 'jdoe@ex\nample.o\nrg']
+    num_of_lines = get_num_of_lines(data_row) #4
+    splitted_strings = split_strings(data_row) # [['6018975a-dde7-46', '66-9436-b171c5a1', '1dde'], ['Jo', 'nh', 'Do', 'e'], ['jdoe@ex', 'ample.o', 'rg']]
+    line = creating_line_content(splitted_strings, 0) #['6018975a-dde7-46', 'Jo', 'jdoe@ex']
+    #data_row.append(row[0][header["name"]].ljust(column_width - 1).rjust(column_width))
+    final_line = vertical_line + vertical_line.join(line) + vertical_line
+    return final_line
+
+#output: │6018975a-dde7-46│Jo│jdoe@ex│
 
 
 
@@ -181,12 +205,6 @@ def format_lines(data):
 #     lines_to_print.append(format_bottom_line(headers_and_sizes_adjusted))
 #     return lines_to_print
 
-
-#IN PROGRESS
-# lines = format_lines_adjusted_to_console(data)
-# for line in lines:
-#     line = adjust_text(line)
-#     print(line)
 
 
 
