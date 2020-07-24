@@ -5,7 +5,7 @@ from printer import format_bottom_line
 from printer import format_separator_line
 from printer import format_data_line
 from printer import format_lines
-from printer import get_headers_and_sizes_adjusted_to_console
+from printer import adjust_col_sizes_to_console
 
 
 def test_get_headers_and_sizes_from_data():
@@ -153,7 +153,7 @@ def test_format_lines_with_int():
     ]
 
 
-def test_get_headers_and_sizes_adjusted_to_console():
+def test_adjust_col_sizes_to_console():
     data = [
         { "size": 36, "name": "id" },
         { "size": 9, "name": "name" },
@@ -166,7 +166,7 @@ def test_get_headers_and_sizes_adjusted_to_console():
         { "size": 9, "name": "email" },
     ]
 
-    assert get_headers_and_sizes_adjusted_to_console(data, console_width=32) == expected_headers
+    assert adjust_col_sizes_to_console(data, console_width=32) == expected_headers
 
 
     data = [
@@ -181,5 +181,5 @@ def test_get_headers_and_sizes_adjusted_to_console():
         { "size": 13, "name": "email" },
     ]
 
-    assert get_headers_and_sizes_adjusted_to_console(data, console_width=46) == expected_headers
+    assert adjust_col_sizes_to_console(data, console_width=46) == expected_headers
 
