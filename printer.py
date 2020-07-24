@@ -108,17 +108,18 @@ def creating_line_content(splitted_strings, i):
 
 def format_data_line(row, headers):
     data_row = []
+    row_to_print = []
     for header in headers:
-        column_width = header["size"] 
-        data_row.append(adjust_text(row[0][header["name"]], column_width)) #['6018975a-dde7-46\n66-9436-b171c5a1\n1dde', 'Jo\nnh\nDo\ne', 'jdoe@ex\nample.o\nrg']
+        string_width = header["size"] - 2 # to have 2 spaces
+        data_row.append(adjust_text(row[0][header["name"]], string_width)) #['6018975a-dde7-46\n66-9436-b171c5a1\n1dde', 'Jo\nnh\nDo\ne', 'jdoe@ex\nample.o\nrg']
     num_of_lines = get_num_of_lines(data_row) #4
     splitted_strings = split_strings(data_row) # [['6018975a-dde7-46', '66-9436-b171c5a1', '1dde'], ['Jo', 'nh', 'Do', 'e'], ['jdoe@ex', 'ample.o', 'rg']]
     line = creating_line_content(splitted_strings, 0) #['6018975a-dde7-46', 'Jo', 'jdoe@ex']
-    #data_row.append(row[0][header["name"]].ljust(column_width - 1).rjust(column_width))
-    final_line = vertical_line + vertical_line.join(line) + vertical_line
+    for string in line:
+        column_width = len(string) + 2
+        row_to_print.append(string.ljust(column_width - 1).rjust(column_width))
+    final_line = vertical_line + vertical_line.join(row_to_print) + vertical_line #│ 6018975a-dde7-46 │ Jo │ jdoe@ex │
     return final_line
-
-#output: │6018975a-dde7-46│Jo│jdoe@ex│
 
 
 
@@ -131,16 +132,15 @@ def _data_to_string(data):
 
 
 def adjust_text(string, column_width):
-    new_col_width = column_width - 2 #to have a space at the beginning and at the end
     char_num_so_far=0 
     line = []
     line_to_print = []
     for word in string.split():
-        if char_num_so_far + len(word) + 1 <= new_col_width:
+        if char_num_so_far + len(word) + 1 <= column_width:
             line.append(word)
             char_num_so_far += len(word) + 1
         else:
-            char_left = new_col_width - char_num_so_far 
+            char_left = column_width - char_num_so_far 
             if char_left == 1:
                 line.append(word[char_left-1])
             if char_left > 1:
@@ -151,23 +151,22 @@ def adjust_text(string, column_width):
             new_word = word[char_left:]
             length = len(new_word)
             start = 0
-            end = new_col_width
+            end = column_width
             while length > 0:
-                if length < new_col_width:
+                if length < column_width:
                     line.append(new_word[start:start+length])
                     char_num_so_far = length + 1
                     break
                 line_to_print.append(new_word[start:end])
-                length -= new_col_width
-                start += new_col_width 
-                end = start + new_col_width
+                length -= column_width
+                start += column_width 
+                end = start + column_width
 
     if line: 
         line_to_print.append(" ".join(line))
     
     return "\n".join(line_to_print)
-
-
+ 
 
 
 def format_lines(data):
