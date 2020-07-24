@@ -6,6 +6,7 @@ from printer import format_separator_line
 from printer import format_data_line
 from printer import format_lines
 from printer import adjust_col_sizes_to_console
+from printer import adjust_text
 
 
 def test_get_headers_and_sizes_from_data():
@@ -182,4 +183,17 @@ def test_adjust_col_sizes_to_console():
     ]
 
     assert adjust_col_sizes_to_console(data, console_width=46) == expected_headers
+
+
+def test_adjust_text():
+    string = "Jonh Doe"
+    assert adjust_text(string, column_width=5) == 'Jon\nh D\noe'
+
+
+    string = "Jonh Doe Doe Doe"
+    assert adjust_text(string, column_width=7) == 'Jonh\nDoe D\noe Do\ne'
+
+
+    string = "6018975a-dde7-4666-9436-b171c5a11dde"    
+    assert adjust_text(string, column_width=7) == '60189\n75a-d\nde7-4\n666-9\n436-b\n171c5\na11dd\ne'
 

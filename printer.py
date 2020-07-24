@@ -74,14 +74,28 @@ def format_separator_line(headers):
     return separator_line
 
 
+
 def format_data_line(data, headers):
     data_row = []
     for header in headers:
-        column_width = header["size"] 
-        data[header["name"]] = adjust_text(column_width, data[header["name"]])
+        column_width = header["size"] + 2
         data_row.append(data[header["name"]].ljust(column_width - 1).rjust(column_width))
     data_row = vertical_line + vertical_line.join(data_row) + vertical_line
     return data_row
+
+
+
+
+
+# def format_data_line(data, headers):
+#     data_row = []
+#     for header in headers:
+#         column_width = header["size"] 
+#         data[header["name"]] = adjust_text(data[header["name"]], column_width)
+#         data_row.append(data[header["name"]].ljust(column_width - 1).rjust(column_width))
+#     data_row = vertical_line + vertical_line.join(data_row) + vertical_line
+#     return data_row
+
 
 
 def _data_to_string(data):
@@ -92,7 +106,7 @@ def _data_to_string(data):
 
 
 
-def adjust_text(column_width, string):
+def adjust_text(string, column_width):
     new_col_width = column_width - 2 #to have a space at the beginning and at the end
     char_num_so_far=0 
     line = []
@@ -127,47 +141,47 @@ def adjust_text(column_width, string):
     if line: 
         line_to_print.append(" ".join(line))
     
-    return line_to_print
+    return "\n".join(line_to_print)
 
 
 
 
-# def format_lines(data):
+def format_lines(data):
+    data = _data_to_string(data)
+    headers_and_sizes = get_headers_and_sizes_from_data(data)
+    lines_to_print = []
+    lines_to_print.append(format_top_line(headers_and_sizes))
+    lines_to_print.append(format_headers(headers_and_sizes))
+    lines_to_print.append(format_separator_line(headers_and_sizes))
+    for row in data[:-1]:
+        lines_to_print.append(format_data_line(row, headers_and_sizes))
+        lines_to_print.append(format_separator_line(headers_and_sizes))
+
+    lines_to_print.append(format_data_line(data[-1], headers_and_sizes))
+    lines_to_print.append(format_bottom_line(headers_and_sizes))
+    return lines_to_print
+
+
+
+# def format_lines_adjusted_to_console(data):
+#     console_width = 32
 #     data = _data_to_string(data)
 #     headers_and_sizes = get_headers_and_sizes_from_data(data)
-#     lines_to_print = []
-#     lines_to_print.append(format_top_line(headers_and_sizes))
-#     lines_to_print.append(format_headers(headers_and_sizes))
-#     lines_to_print.append(format_separator_line(headers_and_sizes))
-#     for row in data[:-1]:
-#         lines_to_print.append(format_data_line(row, headers_and_sizes))
-#         lines_to_print.append(format_separator_line(headers_and_sizes))
 
-#     lines_to_print.append(format_data_line(data[-1], headers_and_sizes))
-#     lines_to_print.append(format_bottom_line(headers_and_sizes))
+#     headers_and_sizes_adjusted = adjust_col_sizes_to_console(headers_and_sizes, console_width)
+#     lines_to_print = []
+#     lines_to_print.append(format_top_line(headers_and_sizes_adjusted))
+#     lines_to_print.append(format_headers(headers_and_sizes_adjusted))
+#     lines_to_print.append(format_separator_line(headers_and_sizes_adjusted))
+#     for row in data[:-1]:
+#         lines_to_print.append(format_data_line(row, headers_and_sizes_adjusted))
+#         lines_to_print.append(format_separator_line(headers_and_sizes_adjusted))
+
+#     lines_to_print.append(format_data_line(data[-1], headers_and_sizes_adjusted))
+#     lines_to_print.append(format_bottom_line(headers_and_sizes_adjusted))
 #     return lines_to_print
 
 
-
-def format_lines_adjusted_to_console(data):
-    console_width = 32
-    data = _data_to_string(data)
-    headers_and_sizes = get_headers_and_sizes_from_data(data)
-
-    headers_and_sizes_adjusted = adjust_col_sizes_to_console(headers_and_sizes, console_width)
-    lines_to_print = []
-    lines_to_print.append(format_top_line(headers_and_sizes_adjusted))
-    lines_to_print.append(format_headers(headers_and_sizes_adjusted))
-    lines_to_print.append(format_separator_line(headers_and_sizes_adjusted))
-    for row in data[:-1]:
-        lines_to_print.append(format_data_line(row, headers_and_sizes_adjusted))
-        lines_to_print.append(format_separator_line(headers_and_sizes_adjusted))
-
-    lines_to_print.append(format_data_line(data[-1], headers_and_sizes_adjusted))
-    lines_to_print.append(format_bottom_line(headers_and_sizes_adjusted))
-    return lines_to_print
-
-    
 #IN PROGRESS
 # lines = format_lines_adjusted_to_console(data)
 # for line in lines:
