@@ -10,6 +10,7 @@ from printer import adjust_text
 from printer import get_num_of_lines
 from printer import split_strings
 from printer import create_line_content
+from printer import format_text_to_width
 
 
 
@@ -217,3 +218,33 @@ def test_create_line_content():
     expected = [['6018975a-dde7-46', 'Jo', 'jdoe@ex'], ['66-9436-b171c5a1', 'nh', 'ample.o'], ['1dde', 'Do', 'rg'], [' ', 'e', ' ']]
     
     assert create_line_content(data) == expected
+
+# def test_format_text_to_width():
+#     data = [
+#                 {
+#                     "id": "6018975a-dde7-4666-9436-b171c5a11dde",
+#                     "name": "Jonh Doe",
+#                     "email": "jdoe@example.org",
+#                 },
+#             ]    
+#     headers = get_headers_and_sizes_from_data(data)
+#     adjusted_headers = adjust_col_sizes_to_console(headers, console_width=32)
+    
+#     assert format_text_to_width(data[0], adjusted_headers) == [['6018975a-dde7-46', '66-9436-b171c5a1', '1dde'], ['Jo', 'nh', 'Do', 'e'], ['jdoe@ex', 'ample.o', 'rg']]
+
+# def test_format_data_line():
+#     data = [
+#             {
+#                 "id": "6018975a-dde7-4666-9436-b171c5a11dde",
+#                 "name": "Jonh Doe",
+#                 "email": "jdoe@example.org",
+#             },
+#             {
+#                 "id": "f05b3da7-701b-40bd-87e8-780693a07b13",
+#                 "name": "Bob Dylan",
+#                 "email": "bdylan@example.org",
+#             },
+#         ]
+#     headers = get_headers_and_sizes_from_data(data)
+    
+#     assert format_data_line(data[0],headers) == ['│ 6018975a-dde7-46 │ Jo │ jdoe@ex │', '│ 66-9436-b171c5a1 │ nh │ ample.o │', '│ 1dde             │ Do │ rg      │', '│                  │ e  │         │']
