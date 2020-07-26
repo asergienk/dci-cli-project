@@ -7,6 +7,11 @@ from printer import format_data_line
 from printer import format_lines
 from printer import adjust_col_sizes_to_console
 from printer import adjust_text
+from printer import get_num_of_lines
+from printer import split_strings
+from printer import create_line_content
+
+
 
 
 def test_get_headers_and_sizes_from_data():
@@ -95,63 +100,63 @@ def test_format_separator_line():
     assert format_separator_line(headers_and_sizes) == "├───────┼────────────┼───────┤"
 
 
-def test_format_data_line():
-    data = [
-        {
-            "id": "6018975a-dde7-4666-9436-b171c5a11dde",
-            "name": "Jonh Doe",
-            "email": "jdoe@example.org",
-        },
-        {
-            "id": "f05b3da7-701b-40bd-87e8-780693a07b13",
-            "name": "Bob Dylan",
-            "email": "bdylan@example.org",
-        },
-    ]
-    headers = get_headers_and_sizes_from_data(data)
+# def test_format_data_line():
+#     data = [
+#         {
+#             "id": "6018975a-dde7-4666-9436-b171c5a11dde",
+#             "name": "Jonh Doe",
+#             "email": "jdoe@example.org",
+#         },
+#         {
+#             "id": "f05b3da7-701b-40bd-87e8-780693a07b13",
+#             "name": "Bob Dylan",
+#             "email": "bdylan@example.org",
+#         },
+#     ]
+#     headers = get_headers_and_sizes_from_data(data)
 
-    assert format_data_line(data[0], headers) == "│ 6018975a-dde7-4666-9436-b171c5a11dde │ Jonh Doe  │ jdoe@example.org   │"
+#     assert format_data_line(data[0], headers) == "│ 6018975a-dde7-4666-9436-b171c5a11dde │ Jonh Doe  │ jdoe@example.org   │"
 
 
-def test_format_lines():
-    data = [
-        {
-            "id": "6018975a-dde7-4666-9436-b171c5a11dde",
-            "name": "Jonh Doe",
-            "email": "jdoe@example.org",
-        },
-        {
-            "id": "f05b3da7-701b-40bd-87e8-780693a07b13",
-            "name": "Bob Dylan",
-            "email": "bdylan@example.org",
-        },
-    ]
+# def test_format_lines():
+#     data = [
+#         {
+#             "id": "6018975a-dde7-4666-9436-b171c5a11dde",
+#             "name": "Jonh Doe",
+#             "email": "jdoe@example.org",
+#         },
+#         {
+#             "id": "f05b3da7-701b-40bd-87e8-780693a07b13",
+#             "name": "Bob Dylan",
+#             "email": "bdylan@example.org",
+#         },
+#     ]
     
-    assert format_lines(data) == [
-        "┌──────────────────────────────────────┬───────────┬────────────────────┐",
-        "│ id                                   │ name      │ email              │",
-        "├──────────────────────────────────────┼───────────┼────────────────────┤",
-        "│ 6018975a-dde7-4666-9436-b171c5a11dde │ Jonh Doe  │ jdoe@example.org   │",
-        "├──────────────────────────────────────┼───────────┼────────────────────┤",
-        "│ f05b3da7-701b-40bd-87e8-780693a07b13 │ Bob Dylan │ bdylan@example.org │",
-        "└──────────────────────────────────────┴───────────┴────────────────────┘",
-    ]
+#     assert format_lines(data) == [
+#         "┌──────────────────────────────────────┬───────────┬────────────────────┐",
+#         "│ id                                   │ name      │ email              │",
+#         "├──────────────────────────────────────┼───────────┼────────────────────┤",
+#         "│ 6018975a-dde7-4666-9436-b171c5a11dde │ Jonh Doe  │ jdoe@example.org   │",
+#         "├──────────────────────────────────────┼───────────┼────────────────────┤",
+#         "│ f05b3da7-701b-40bd-87e8-780693a07b13 │ Bob Dylan │ bdylan@example.org │",
+#         "└──────────────────────────────────────┴───────────┴────────────────────┘",
+#     ]
 
 
-def test_format_lines_with_int():
-    data = [
-        {
-            "name": "Jonh Doe",
-            "age": 32,
-        }
-    ]
-    assert format_lines(data) ==  [
-        "┌──────────┬─────┐",
-        "│ name     │ age │",
-        "├──────────┼─────┤",
-        "│ Jonh Doe │ 32  │",
-        "└──────────┴─────┘",
-    ]
+# def test_format_lines_with_int():
+#     data = [
+#         {
+#             "name": "Jonh Doe",
+#             "age": 32,
+#         }
+#     ]
+#     assert format_lines(data) ==  [
+#         "┌──────────┬─────┐",
+#         "│ name     │ age │",
+#         "├──────────┼─────┤",
+#         "│ Jonh Doe │ 32  │",
+#         "└──────────┴─────┘",
+#     ]
 
 
 def test_adjust_col_sizes_to_console():
@@ -187,13 +192,28 @@ def test_adjust_col_sizes_to_console():
 
 def test_adjust_text():
     string = "Jonh Doe"
-    assert adjust_text(string, column_width=5) == 'Jon\nh D\noe'
-
-
-    string = "Jonh Doe Doe Doe"
-    assert adjust_text(string, column_width=7) == 'Jonh\nDoe D\noe Do\ne'
-
+    assert adjust_text(string, column_width=5) == 'Jonh\nDoe'
 
     string = "6018975a-dde7-4666-9436-b171c5a11dde"    
-    assert adjust_text(string, column_width=7) == '60189\n75a-d\nde7-4\n666-9\n436-b\n171c5\na11dd\ne'
+    assert adjust_text(string, column_width=7) == '6018975\na-dde7-\n4666-94\n36-b171\nc5a11dd\ne'
 
+
+def test_get_num_of_lines():
+    data = ['6018975a-dde7-46\n66-9436-b171c5a1\n1dde', 'Jo\nnh\nDo\ne', 'jdoe@ex\nample.o\nrg']
+    assert get_num_of_lines(data) == 4
+
+
+def test_split_strings():
+    data = ['6018975a-dde7-46\n66-9436-b171c5a1\n1dde', 'Jo\nnh\nDo\ne', 'jdoe@ex\nample.o\nrg']
+    
+    expected = [['6018975a-dde7-46', '66-9436-b171c5a1', '1dde'], ['Jo', 'nh', 'Do', 'e'], ['jdoe@ex', 'ample.o', 'rg']]
+    
+    assert split_strings(data) == expected
+
+
+def test_create_line_content():
+    data = [['6018975a-dde7-46', '66-9436-b171c5a1', '1dde'], ['Jo', 'nh', 'Do', 'e'], ['jdoe@ex', 'ample.o', 'rg']]
+    
+    expected = [['6018975a-dde7-46', 'Jo', 'jdoe@ex'], ['66-9436-b171c5a1', 'nh', 'ample.o'], ['1dde', 'Do', 'rg'], [' ', 'e', ' ']]
+    
+    assert create_line_content(data) == expected

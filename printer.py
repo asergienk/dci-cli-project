@@ -97,29 +97,44 @@ def split_strings(data_row):
         splitted_strings.append(string.split("\n"))
     return splitted_strings
 
-def creating_line_content(splitted_strings, i):
+def create_line_content(splitted_strings):
+    lines = []
     line = []
-    for item in splitted_strings:
-        line.append(item[i])
-        continue
-    
-    return line
+    max_length = max([len(item) for item in splitted_strings])
+    i = 0
+    while max_length > 0:
+        for item in splitted_strings:
+                try:
+                    line.append(item[i])
+                except IndexError:
+                    line.append(" ")
+                continue
+        lines.append(line)
+        line = []
+        max_length -= 1
+        i += 1
+
+    return lines
 
 
 def format_data_line(row, headers):
-    data_row = []
+    headers_sizes = [header["size"] for header in headers]
     row_to_print = []
-    for header in headers:
-        string_width = header["size"] - 2 # to have 2 spaces
-        data_row.append(adjust_text(row[0][header["name"]], string_width)) #['6018975a-dde7-46\n66-9436-b171c5a1\n1dde', 'Jo\nnh\nDo\ne', 'jdoe@ex\nample.o\nrg']
-    num_of_lines = get_num_of_lines(data_row) #4
-    splitted_strings = split_strings(data_row) # [['6018975a-dde7-46', '66-9436-b171c5a1', '1dde'], ['Jo', 'nh', 'Do', 'e'], ['jdoe@ex', 'ample.o', 'rg']]
-    line = creating_line_content(splitted_strings, 0) #['6018975a-dde7-46', 'Jo', 'jdoe@ex']
-    for string in line:
-        column_width = len(string) + 2
-        row_to_print.append(string.ljust(column_width - 1).rjust(column_width))
-    final_line = vertical_line + vertical_line.join(row_to_print) + vertical_line #│ 6018975a-dde7-46 │ Jo │ jdoe@ex │
-    return final_line
+    final_data = []
+    splitted_strings = format_text_to_width(row, headers)# [['6018975a-dde7-46', '66-9436-b171c5a1', '1dde'], ['Jo', 'nh', 'Do', 'e'], ['jdoe@ex', 'ample.o', 'rg']]
+    
+    line = create_line_content(splitted_strings) #[['6018975a-dde7-46', 'Jo', 'jdoe@ex'], ['66-9436-b171c5a1', 'nh', 'ample.o'], ['1dde', 'Do', 'rg'], [' ', 'e', ' ']]
+    for item in line:
+        i = 0
+        for string in item:
+            column_width = headers_sizes[i]
+            row_to_print.append(string.ljust(column_width - 1).rjust(column_width))
+            i += 1
+        final_data.append(vertical_line + vertical_line.join(row_to_print) + vertical_line) #│ 6018975a-dde7-46 │ Jo │ jdoe@ex │
+        row_to_print = []
+    return final_data #['│ 6018975a-dde7-46 │ Jo │ jdoe@ex │', '│ 66-9436-b171c5a1 │ nh │ ample.o │', '│ 1dde             │ Do │ rg      │', '│                  │ e  │         │']
+
+
 
 
 
