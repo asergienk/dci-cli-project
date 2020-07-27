@@ -11,7 +11,7 @@ from printer import get_num_of_lines
 from printer import split_strings
 from printer import create_line_content
 from printer import format_text_to_width
-
+from printer import format_lines_adjusted_to_console
 
 
 
@@ -43,30 +43,30 @@ def test_format_top_line():
         { "size": 5, "name": "name"} ,
         { "size": 5, "name": "email"} ,
     ]
-    assert format_top_line(headers_and_sizes) == "┌───────┬───────┬───────┐"
+    assert format_top_line(headers_and_sizes) == "┌─────┬─────┬─────┐"
 
     headers_and_sizes = [
         { "size": 5, "name": "id"} ,
         { "size": 10, "name": "name"} ,
         { "size": 5, "name": "email"} ,
     ]
-    assert format_top_line(headers_and_sizes) == "┌───────┬────────────┬───────┐"
+    assert format_top_line(headers_and_sizes) == "┌─────┬──────────┬─────┐"
 
 
-def test_headers_line():
-    headers_and_sizes = [
-        { "size": 5, "name": "id"} ,
-        { "size": 5, "name": "name"} ,
-        { "size": 5, "name": "email"} ,
-    ]
-    assert format_headers(headers_and_sizes) == "│ id    │ name  │ email │"
+# def test_headers_line():
+#     headers_and_sizes = [
+#         { "size": 5, "name": "id"} ,
+#         { "size": 5, "name": "name"} ,
+#         { "size": 5, "name": "email"} ,
+#     ]
+#     assert format_headers(headers_and_sizes) == "│ id    │ name  │ email │"
 
-    headers_and_sizes = [
-        { "size": 10, "name": "id"} ,
-        { "size": 5, "name": "name"} ,
-        { "size": 5, "name": "email"} ,
-    ]
-    assert format_headers(headers_and_sizes) == "│ id         │ name  │ email │"
+#     headers_and_sizes = [
+#         { "size": 10, "name": "id"} ,
+#         { "size": 5, "name": "name"} ,
+#         { "size": 5, "name": "email"} ,
+#     ]
+#     assert format_headers(headers_and_sizes) == "│ id         │ name  │ email │"
     
 
 def test_format_bottom_line():
@@ -75,14 +75,14 @@ def test_format_bottom_line():
         { "size": 5, "name": "name"} ,
         { "size": 5, "name": "email"} ,
     ]
-    assert format_bottom_line(headers_and_sizes) == "└───────┴───────┴───────┘"
+    assert format_bottom_line(headers_and_sizes) == "└─────┴─────┴─────┘"
 
     headers_and_sizes = [
         { "size": 5, "name": "id"} ,
         { "size": 10, "name": "name"} ,
         { "size": 5, "name": "email"} ,
     ]
-    assert format_bottom_line(headers_and_sizes) == "└───────┴────────────┴───────┘"
+    assert format_bottom_line(headers_and_sizes) == "└─────┴──────────┴─────┘"
 
 
 def test_format_separator_line():
@@ -91,14 +91,14 @@ def test_format_separator_line():
         { "size": 5, "name": "name"} ,
         { "size": 5, "name": "email"} ,
     ]
-    assert format_separator_line(headers_and_sizes) == "├───────┼───────┼───────┤"
+    assert format_separator_line(headers_and_sizes) == "├─────┼─────┼─────┤"
 
     headers_and_sizes = [
         { "size": 5, "name": "id"} ,
         { "size": 10, "name": "name"} ,
         { "size": 5, "name": "email"} ,
     ]
-    assert format_separator_line(headers_and_sizes) == "├───────┼────────────┼───────┤"
+    assert format_separator_line(headers_and_sizes) == "├─────┼──────────┼─────┤"
 
 
 # def test_format_data_line():
@@ -219,32 +219,47 @@ def test_create_line_content():
     
     assert create_line_content(data) == expected
 
-# def test_format_text_to_width():
-#     data = [
-#                 {
-#                     "id": "6018975a-dde7-4666-9436-b171c5a11dde",
-#                     "name": "Jonh Doe",
-#                     "email": "jdoe@example.org",
-#                 },
-#             ]    
-#     headers = get_headers_and_sizes_from_data(data)
-#     adjusted_headers = adjust_col_sizes_to_console(headers, console_width=32)
-    
-#     assert format_text_to_width(data[0], adjusted_headers) == [['6018975a-dde7-46', '66-9436-b171c5a1', '1dde'], ['Jo', 'nh', 'Do', 'e'], ['jdoe@ex', 'ample.o', 'rg']]
 
-# def test_format_data_line():
-#     data = [
-#             {
-#                 "id": "6018975a-dde7-4666-9436-b171c5a11dde",
-#                 "name": "Jonh Doe",
-#                 "email": "jdoe@example.org",
-#             },
-#             {
-#                 "id": "f05b3da7-701b-40bd-87e8-780693a07b13",
-#                 "name": "Bob Dylan",
-#                 "email": "bdylan@example.org",
-#             },
-#         ]
-#     headers = get_headers_and_sizes_from_data(data)
+def test_format_text_to_width():
+    data = [
+                {
+                    "id": "6018975a-dde7-4666-9436-b171c5a11dde",
+                    "name": "Jonh Doe",
+                    "email": "jdoe@example.org",
+                },
+            ]    
+    headers = get_headers_and_sizes_from_data(data)
+    adjusted_headers = adjust_col_sizes_to_console(headers, console_width=32)
+
+    assert format_text_to_width(data, adjusted_headers) == [['6018975a-dde7-466', '6-9436-b171c5a11d', 'de'], ['Jo', 'nh', 'Do', 'e'], ['jdoe@e', 'xample', '.org']]
     
-#     assert format_data_line(data[0],headers) == ['│ 6018975a-dde7-46 │ Jo │ jdoe@ex │', '│ 66-9436-b171c5a1 │ nh │ ample.o │', '│ 1dde             │ Do │ rg      │', '│                  │ e  │         │']
+    # data = [
+    #     {
+    #         "id": "6018975a-dde7-4666-9436-b171c5a11dde",
+    #         "name": "Jonh Doe",
+    #         "email": "jdoe@example.org",
+    #     },
+    #     {
+    #         "id": "f05b3da7-701b-40bd-87e8-780693a07b13",
+    #         "name": "Bob Dylan",
+    #         "email": "bdylan@example.org",
+    #     },
+    # ]
+    # headers = get_headers_and_sizes_from_data(data)
+    # adjusted_headers = adjust_col_sizes_to_console(headers, console_width=32)
+
+    # assert format_text_to_width(data[1], adjusted_headers) == [['f05b3da7-701b-40b', 'd-87e8-780693a07b', '13'], ['Bo', 'b', 'Dy', 'la', 'n'], ['bdylan@', 'example', '.org']]
+
+def test_format_data_line():
+    data = [
+            {
+                "id": "6018975a-dde7-4666-9436-b171c5a11dde",
+                "name": "Jonh Doe",
+                "email": "jdoe@example.org",
+            },
+        ]
+    headers = get_headers_and_sizes_from_data(data)
+    adjusted_headers = adjust_col_sizes_to_console(headers, console_width=32)
+    print(adjusted_headers)
+
+    assert format_data_line(data,adjusted_headers) == ['│ 6018975a-dde7-466 │ Jo │ jdoe@e │', '│ 6-9436-b171c5a11d │ nh │ xample │', '│ de                │ Do │ .org   │', '│                   │ e  │        │']
