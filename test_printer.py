@@ -1,16 +1,15 @@
 from printer import get_headers_and_sizes_from_data
-from printer import format_top_line
-from printer import format_headers
-from printer import format_bottom_line
-from printer import format_separator_line
-from printer import format_data_line
-from printer import adjust_col_sizes_to_console
+from printer import format_line
+
+from printer import adjust_column_width_to_console
 from printer import adjust_text
 from printer import split_strings
 from printer import create_line_content
 from printer import format_text_to_width
-from printer import format_lines_adjusted_to_console
+from printer import format_data_line
 from printer import format_text
+from printer import format_headers
+from printer import format_lines_adjusted_to_console
 
 
 
@@ -36,69 +35,41 @@ def test_get_headers_and_sizes_from_data():
     assert get_headers_and_sizes_from_data(data) == expected_headers
 
 
-def test_format_top_line():
+def test_format_line():
     headers_and_sizes = [
         { "size": 5, "name": "id"} ,
         { "size": 5, "name": "name"} ,
         { "size": 5, "name": "email"} ,
     ]
-    assert format_top_line(headers_and_sizes) == "┌─────┬─────┬─────┐"
+    assert format_line(headers_and_sizes, "top") == "┌─────┬─────┬─────┐"
 
     headers_and_sizes = [
         { "size": 5, "name": "id"} ,
         { "size": 10, "name": "name"} ,
         { "size": 5, "name": "email"} ,
     ]
-    assert format_top_line(headers_and_sizes) == "┌─────┬──────────┬─────┐"
-
-
-def test_format_bottom_line():
-    headers_and_sizes = [
-        { "size": 5, "name": "id"} ,
-        { "size": 5, "name": "name"} ,
-        { "size": 5, "name": "email"} ,
-    ]
-    assert format_bottom_line(headers_and_sizes) == "└─────┴─────┴─────┘"
+    assert format_line(headers_and_sizes, "separator") == "├─────┼──────────┼─────┤"
 
     headers_and_sizes = [
         { "size": 5, "name": "id"} ,
         { "size": 10, "name": "name"} ,
         { "size": 5, "name": "email"} ,
     ]
-    assert format_bottom_line(headers_and_sizes) == "└─────┴──────────┴─────┘"
+    assert format_line(headers_and_sizes, "bottom") == "└─────┴──────────┴─────┘"
 
 
-def test_format_separator_line():
-    headers_and_sizes = [
-        { "size": 5, "name": "id"} ,
-        { "size": 5, "name": "name"} ,
-        { "size": 5, "name": "email"} ,
-    ]
-    assert format_separator_line(headers_and_sizes) == "├─────┼─────┼─────┤"
-
-    headers_and_sizes = [
-        { "size": 5, "name": "id"} ,
-        { "size": 10, "name": "name"} ,
-        { "size": 5, "name": "email"} ,
-    ]
-    assert format_separator_line(headers_and_sizes) == "├─────┼──────────┼─────┤"
-
-
-
-def test_adjust_col_sizes_to_console():
+def test_adjust_column_width_to_console():
     data = [
         { "size": 36, "name": "id" },
         { "size": 9, "name": "name" },
         { "size": 18, "name": "email" },
     ]
-
     expected_headers = [
         { "size": 18, "name": "id" },
         { "size": 4, "name": "name" },
         { "size": 9, "name": "email" },
     ]
-
-    assert adjust_col_sizes_to_console(data, console_width=32) == expected_headers
+    assert adjust_column_width_to_console(data, console_width=32) == expected_headers
 
 
     data = [
@@ -106,14 +77,12 @@ def test_adjust_col_sizes_to_console():
         { "size": 9, "name": "name" },
         { "size": 18, "name": "email" },
     ]
-
     expected_headers = [
         { "size": 26, "name": "id" },
         { "size": 6, "name": "name" },
         { "size": 13, "name": "email" },
     ]
-
-    assert adjust_col_sizes_to_console(data, console_width=46) == expected_headers
+    assert adjust_column_width_to_console(data, console_width=46) == expected_headers
 
 
 def test_adjust_text():
@@ -149,8 +118,7 @@ def test_format_text_to_width():
                 },
             ]    
     headers = get_headers_and_sizes_from_data(data)
-    adjusted_headers = adjust_col_sizes_to_console(headers, console_width=32)
-
+    adjusted_headers = adjust_column_width_to_console(headers, console_width=32)
     assert format_text_to_width(data[0], adjusted_headers) == [['6018975a-dde7-466', '6-9436-b171c5a11d', 'de'], ['Jo', 'nh', 'Do', 'e'], ['jdoe@e', 'xample', '.org']]
     
     data = [
@@ -166,8 +134,7 @@ def test_format_text_to_width():
         },
     ]
     headers = get_headers_and_sizes_from_data(data)
-    adjusted_headers = adjust_col_sizes_to_console(headers, console_width=32)
-    
+    adjusted_headers = adjust_column_width_to_console(headers, console_width=32)
     assert format_text_to_width(data[1], adjusted_headers) == [['f05b3da7-701b-40', 'bd-87e8-780693a0', '7b13'], ['Bo', 'b', 'Dy', 'la', 'n'], ['bdylan@', 'example', '.org']]
 
 
@@ -180,8 +147,7 @@ def test_format_data_line():
             },
         ]
     headers = get_headers_and_sizes_from_data(data)
-    adjusted_headers = adjust_col_sizes_to_console(headers, console_width=32)
-
+    adjusted_headers = adjust_column_width_to_console(headers, console_width=32)
     assert format_data_line(data[0],adjusted_headers) == ['│ 6018975a-dde7-466 │ Jo │ jdoe@e │', '│ 6-9436-b171c5a11d │ nh │ xample │', '│ de                │ Do │ .org   │', '│                   │ e  │        │']
 
 
