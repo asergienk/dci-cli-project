@@ -214,3 +214,56 @@ def test_format_headers():
     expected = ["│ id               │ na │ email   │", "│                  │ me │         │"]
 
     assert format_headers(headers) == expected
+
+
+def test_format_lines_adjusted_to_console():
+    data = [
+        {
+            "id": "6018975a-dde7-4666-9436-b171c5a11dde",
+            "name": "Jonh Doe",
+            "email": "jdoe@example.org",
+        },
+        {
+            "id": "f05b3da7-701b-40bd-87e8-780693a07b13",
+            "name": "Bob Dylan",
+            "email": "bdylan@example.org",
+        },
+    ]
+
+    expected = [
+        "┌──────────────────┬────┬─────────┐",
+        "│ id               │ na │ email   │",
+        "│                  │ me │         │",
+        "├──────────────────┼────┼─────────┤",
+        "│ 6018975a-dde7-46 │ Jo │ jdoe@ex │",
+        "│ 66-9436-b171c5a1 │ nh │ ample.o │",
+        "│ 1dde             │ Do │ rg      │",
+        "│                  │ e  │         │",
+        "├──────────────────┼────┼─────────┤",
+        "│ f05b3da7-701b-40 │ Bo │ bdylan@ │",
+        "│ bd-87e8-780693a0 │ b  │ example │",
+        "│ 7b13             │ Dy │ .org    │",
+        "│                  │ la │         │",
+        "│                  │ n  │         │",
+        "└──────────────────┴────┴─────────┘",
+    ]
+    assert format_lines_adjusted_to_console(data, console_width=32) == expected
+
+    data = [
+        {
+            "id": "6018975a-dde7-4666-9436-b171c5a11dde",
+            "name": "Jonh Doe",
+            "email": "jdoe@example.org",
+        },
+    ]
+    expected = [
+        "┌─────────────────────────┬─────┬───────────┐",
+        "│ id                      │ nam │ email     │",
+        "│                         │ e   │           │",
+        "├─────────────────────────┼─────┼───────────┤",
+        "│ 6018975a-dde7-4666-9436 │ Jon │ jdoe@exam │",
+        "│ -b171c5a11dde           │ h D │ ple.org   │",
+        "│                         │ oe  │           │",
+        "└─────────────────────────┴─────┴───────────┘",
+    ]
+    assert format_lines_adjusted_to_console(data, console_width=42) == expected

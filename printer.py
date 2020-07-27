@@ -181,8 +181,7 @@ def adjust_text(string, column_width):
  
 
 
-def format_lines_adjusted_to_console(data):
-    console_width = 32
+def format_lines_adjusted_to_console(data, console_width):
     data = _data_to_string(data)
     headers_and_sizes = get_headers_and_sizes_from_data(data)
     headers_and_sizes_adjusted = adjust_col_sizes_to_console(headers_and_sizes, console_width)
@@ -194,14 +193,16 @@ def format_lines_adjusted_to_console(data):
         lines_to_print.append(string)
     lines_to_print.append(format_separator_line(headers_and_sizes_adjusted))
     
-    for row in data:
+
+    for row in data[:-1]:
         data_line = format_data_line(row, headers_and_sizes_adjusted)#['│ 6018975a-dde7-46 │ Jo │ jdoe@ex │', '│ 66-9436-b171c5a1 │ nh │ ample.o │', '│ 1dde             │ Do │ rg      │', '│                  │ e  │         │']
         for string in data_line:
             lines_to_print.append(string)
-    
-    #lines_to_print.append(format_separator_line(headers_and_sizes_adjusted))
+        lines_to_print.append(format_separator_line(headers_and_sizes_adjusted))
 
-    #lines_to_print.append(format_data_line(data, headers_and_sizes_adjusted))
+    data_last_row = format_data_line(data[-1], headers_and_sizes_adjusted)
+    for string in data_last_row:
+        lines_to_print.append(string)
     lines_to_print.append(format_bottom_line(headers_and_sizes_adjusted))
     return lines_to_print
 
@@ -209,12 +210,13 @@ def format_lines_adjusted_to_console(data):
 
 
 data = [
-    {
-        "id": "6018975a-dde7-4666-9436-b171c5a11dde",
-        "name": "Jonh Doe",
-        "email": "jdoe@example.org",
-    },
+        {
+            "id": "6018975a-dde7-4666-9436-b171c5a11dde",
+            "name": "Jonh Doe",
+            "email": "jdoe@example.org",
+        },
     ]
+
 headers = [
         { "size": 18, "name": "id" },
         { "size": 4, "name": "name" },
@@ -222,7 +224,7 @@ headers = [
     ]
 
 
-lines = format_lines_adjusted_to_console(data)
+lines = format_lines_adjusted_to_console(data, 42)
 for line in lines:
     print(line)
 
