@@ -199,11 +199,6 @@ def test_adjust_text():
     assert adjust_text(string, column_width=7) == '6018975\na-dde7-\n4666-94\n36-b171\nc5a11dd\ne'
 
 
-def test_get_num_of_lines():
-    data = ['6018975a-dde7-46\n66-9436-b171c5a1\n1dde', 'Jo\nnh\nDo\ne', 'jdoe@ex\nample.o\nrg']
-    assert get_num_of_lines(data) == 4
-
-
 def test_split_strings():
     data = ['6018975a-dde7-46\n66-9436-b171c5a1\n1dde', 'Jo\nnh\nDo\ne', 'jdoe@ex\nample.o\nrg']
     
@@ -231,24 +226,24 @@ def test_format_text_to_width():
     headers = get_headers_and_sizes_from_data(data)
     adjusted_headers = adjust_col_sizes_to_console(headers, console_width=32)
 
-    assert format_text_to_width(data, adjusted_headers) == [['6018975a-dde7-466', '6-9436-b171c5a11d', 'de'], ['Jo', 'nh', 'Do', 'e'], ['jdoe@e', 'xample', '.org']]
+    assert format_text_to_width(data[0], adjusted_headers) == [['6018975a-dde7-466', '6-9436-b171c5a11d', 'de'], ['Jo', 'nh', 'Do', 'e'], ['jdoe@e', 'xample', '.org']]
     
-    # data = [
-    #     {
-    #         "id": "6018975a-dde7-4666-9436-b171c5a11dde",
-    #         "name": "Jonh Doe",
-    #         "email": "jdoe@example.org",
-    #     },
-    #     {
-    #         "id": "f05b3da7-701b-40bd-87e8-780693a07b13",
-    #         "name": "Bob Dylan",
-    #         "email": "bdylan@example.org",
-    #     },
-    # ]
-    # headers = get_headers_and_sizes_from_data(data)
-    # adjusted_headers = adjust_col_sizes_to_console(headers, console_width=32)
-
-    # assert format_text_to_width(data[1], adjusted_headers) == [['f05b3da7-701b-40b', 'd-87e8-780693a07b', '13'], ['Bo', 'b', 'Dy', 'la', 'n'], ['bdylan@', 'example', '.org']]
+    data = [
+        {
+            "id": "6018975a-dde7-4666-9436-b171c5a11dde",
+            "name": "Jonh Doe",
+            "email": "jdoe@example.org",
+        },
+        {
+            "id": "f05b3da7-701b-40bd-87e8-780693a07b13",
+            "name": "Bob Dylan",
+            "email": "bdylan@example.org",
+        },
+    ]
+    headers = get_headers_and_sizes_from_data(data)
+    adjusted_headers = adjust_col_sizes_to_console(headers, console_width=32)
+    
+    assert format_text_to_width(data[1], adjusted_headers) == [['f05b3da7-701b-40', 'bd-87e8-780693a0', '7b13'], ['Bo', 'b', 'Dy', 'la', 'n'], ['bdylan@', 'example', '.org']]
 
 def test_format_data_line():
     data = [
@@ -260,6 +255,5 @@ def test_format_data_line():
         ]
     headers = get_headers_and_sizes_from_data(data)
     adjusted_headers = adjust_col_sizes_to_console(headers, console_width=32)
-    print(adjusted_headers)
 
-    assert format_data_line(data,adjusted_headers) == ['│ 6018975a-dde7-466 │ Jo │ jdoe@e │', '│ 6-9436-b171c5a11d │ nh │ xample │', '│ de                │ Do │ .org   │', '│                   │ e  │        │']
+    assert format_data_line(data[0],adjusted_headers) == ['│ 6018975a-dde7-466 │ Jo │ jdoe@e │', '│ 6-9436-b171c5a11d │ nh │ xample │', '│ de                │ Do │ .org   │', '│                   │ e  │        │']

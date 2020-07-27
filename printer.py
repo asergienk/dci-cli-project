@@ -65,14 +65,6 @@ def format_separator_line(headers):
     return separator_line
 
 
-def get_num_of_lines(data_row):
-    num_of_new_lines = []
-    for string in data_row:
-        num_of_new_lines.append(string.count("\n"))
-    num_of_lines = max(num_of_new_lines) + 1
-    return num_of_lines
-
-
 def split_strings(data_row):
     splitted_strings = []
     for string in data_row:
@@ -104,8 +96,7 @@ def format_text_to_width(row, headers):
     data_row = []
     for header in headers:
         string_width = header["size"] - 2 # to have 2 spaces
-        data_row.append(adjust_text(row[0][header["name"]], string_width)) #['6018975a-dde7-46\n66-9436-b171c5a1\n1dde', 'Jo\nnh\nDo\ne', 'jdoe@ex\nample.o\nrg']
-    num_of_lines = get_num_of_lines(data_row) #4
+        data_row.append(adjust_text(row[header["name"]], string_width)) #['6018975a-dde7-46\n66-9436-b171c5a1\n1dde', 'Jo\nnh\nDo\ne', 'jdoe@ex\nample.o\nrg']
     splitted_strings = split_strings(data_row) # [['6018975a-dde7-46', '66-9436-b171c5a1', '1dde'], ['Jo', 'nh', 'Do', 'e'], ['jdoe@ex', 'ample.o', 'rg']]
     return splitted_strings
 
@@ -203,19 +194,19 @@ def format_lines(data):
 
 
 def format_lines_adjusted_to_console(data):
-    console_width = 46
+    console_width = 32
     data = _data_to_string(data)
     headers_and_sizes = get_headers_and_sizes_from_data(data)
-
     headers_and_sizes_adjusted = adjust_col_sizes_to_console(headers_and_sizes, console_width)
+
     lines_to_print = []
     lines_to_print.append(format_top_line(headers_and_sizes_adjusted))
     #lines_to_print.append(format_headers(headers_and_sizes_adjusted))
     lines_to_print.append(format_separator_line(headers_and_sizes_adjusted))
-    #for row in data:
-    data = format_data_line(data, headers_and_sizes_adjusted)#['│ 6018975a-dde7-46 │ Jo │ jdoe@ex │', '│ 66-9436-b171c5a1 │ nh │ ample.o │', '│ 1dde             │ Do │ rg      │', '│                  │ e  │         │']
-    for string in data:
-        lines_to_print.append(string)
+    for row in data:
+        data_line = format_data_line(row, headers_and_sizes_adjusted)#['│ 6018975a-dde7-46 │ Jo │ jdoe@ex │', '│ 66-9436-b171c5a1 │ nh │ ample.o │', '│ 1dde             │ Do │ rg      │', '│                  │ e  │         │']
+        for string in data_line:
+            lines_to_print.append(string)
     #lines_to_print.append(format_separator_line(headers_and_sizes_adjusted))
 
     #lines_to_print.append(format_data_line(data, headers_and_sizes_adjusted))
