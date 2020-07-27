@@ -102,12 +102,27 @@ def format_text_to_width(row, headers):
 
 
 def format_data_line(row, headers):
+    splitted_strings = format_text_to_width(row, headers)# [['6018975a-dde7-46', '66-9436-b171c5a1', '1dde'], ['Jo', 'nh', 'Do', 'e'], ['jdoe@ex', 'ample.o', 'rg']]
+    final_line = format_text(headers, splitted_strings)
+    return final_line
+    
+
+def format_headers(headers):
+    headers_row = []
+    
+    for header in headers:
+        string_width = header["size"] - 2
+        headers_row.append(adjust_text(header["name"], string_width))
+    splitted_strings = split_strings(headers_row)#[['id'], ['na', 'me'], ['email']]
+    final_line = format_text(headers, splitted_strings)
+    return final_line
+    
+
+def format_text(headers, splitted_strings):
     headers_sizes = [header["size"] for header in headers]
     row_to_print = []
     final_data = []
-    splitted_strings = format_text_to_width(row, headers)# [['6018975a-dde7-46', '66-9436-b171c5a1', '1dde'], ['Jo', 'nh', 'Do', 'e'], ['jdoe@ex', 'ample.o', 'rg']]
-    
-    line = create_line_content(splitted_strings) #[['6018975a-dde7-46', 'Jo', 'jdoe@ex'], ['66-9436-b171c5a1', 'nh', 'ample.o'], ['1dde', 'Do', 'rg'], [' ', 'e', ' ']]
+    line = create_line_content(splitted_strings) 
     for item in line:
         i = 0
         for string in item:
@@ -117,17 +132,7 @@ def format_data_line(row, headers):
         final_data.append(vertical_line + vertical_line.join(row_to_print) + vertical_line) #│ 6018975a-dde7-46 │ Jo │ jdoe@ex │
         row_to_print = []
     return final_data #['│ 6018975a-dde7-46 │ Jo │ jdoe@ex │', '│ 66-9436-b171c5a1 │ nh │ ample.o │', '│ 1dde             │ Do │ rg      │', '│                  │ e  │         │']
-
-
-
-def format_headers(headers):
-    headers_row = []
-    for header in headers:
-        column_width = header["size"] 
-        headers_row.append(header["name"].ljust(column_width - 1).rjust(column_width))
-    headers_row = vertical_line + vertical_line.join(headers_row) + vertical_line
-    return headers_row
-
+    
 
 
 def _data_to_string(data):
@@ -176,23 +181,6 @@ def adjust_text(string, column_width):
  
 
 
-def format_lines(data):
-    data = _data_to_string(data)
-    headers_and_sizes = get_headers_and_sizes_from_data(data)
-    lines_to_print = []
-    lines_to_print.append(format_top_line(headers_and_sizes))
-    lines_to_print.append(format_headers(headers_and_sizes))
-    lines_to_print.append(format_separator_line(headers_and_sizes))
-    for row in data[:-1]:
-        lines_to_print.append(format_data_line(row, headers_and_sizes))
-        lines_to_print.append(format_separator_line(headers_and_sizes))
-
-    lines_to_print.append(format_data_line(data[-1], headers_and_sizes))
-    lines_to_print.append(format_bottom_line(headers_and_sizes))
-    return lines_to_print
-
-
-
 def format_lines_adjusted_to_console(data):
     console_width = 32
     data = _data_to_string(data)
@@ -201,12 +189,16 @@ def format_lines_adjusted_to_console(data):
 
     lines_to_print = []
     lines_to_print.append(format_top_line(headers_and_sizes_adjusted))
-    #lines_to_print.append(format_headers(headers_and_sizes_adjusted))
+    headers_line = format_headers(headers_and_sizes_adjusted)
+    for string in headers_line:
+        lines_to_print.append(string)
     lines_to_print.append(format_separator_line(headers_and_sizes_adjusted))
+    
     for row in data:
         data_line = format_data_line(row, headers_and_sizes_adjusted)#['│ 6018975a-dde7-46 │ Jo │ jdoe@ex │', '│ 66-9436-b171c5a1 │ nh │ ample.o │', '│ 1dde             │ Do │ rg      │', '│                  │ e  │         │']
         for string in data_line:
             lines_to_print.append(string)
+    
     #lines_to_print.append(format_separator_line(headers_and_sizes_adjusted))
 
     #lines_to_print.append(format_data_line(data, headers_and_sizes_adjusted))
@@ -223,6 +215,12 @@ data = [
         "email": "jdoe@example.org",
     },
     ]
+headers = [
+        { "size": 18, "name": "id" },
+        { "size": 4, "name": "name" },
+        { "size": 9, "name": "email" },
+    ]
+
 
 lines = format_lines_adjusted_to_console(data)
 for line in lines:
