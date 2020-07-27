@@ -5,10 +5,9 @@ from printer import adjust_column_width_to_console
 from printer import adjust_text
 from printer import split_strings
 from printer import create_line_content
-from printer import format_text_to_width
 from printer import format_data_line
 from printer import format_text
-from printer import format_headers
+from printer import format_headers_line
 from printer import format_lines_adjusted_to_console
 
 
@@ -109,35 +108,6 @@ def test_create_line_content():
     assert create_line_content(data) == expected
 
 
-def test_format_text_to_width():
-    data = [
-                {
-                    "id": "6018975a-dde7-4666-9436-b171c5a11dde",
-                    "name": "Jonh Doe",
-                    "email": "jdoe@example.org",
-                },
-            ]    
-    headers = get_headers_and_sizes_from_data(data)
-    adjusted_headers = adjust_column_width_to_console(headers, console_width=32)
-    assert format_text_to_width(data[0], adjusted_headers) == [['6018975a-dde7-466', '6-9436-b171c5a11d', 'de'], ['Jo', 'nh', 'Do', 'e'], ['jdoe@e', 'xample', '.org']]
-    
-    data = [
-        {
-            "id": "6018975a-dde7-4666-9436-b171c5a11dde",
-            "name": "Jonh Doe",
-            "email": "jdoe@example.org",
-        },
-        {
-            "id": "f05b3da7-701b-40bd-87e8-780693a07b13",
-            "name": "Bob Dylan",
-            "email": "bdylan@example.org",
-        },
-    ]
-    headers = get_headers_and_sizes_from_data(data)
-    adjusted_headers = adjust_column_width_to_console(headers, console_width=32)
-    assert format_text_to_width(data[1], adjusted_headers) == [['f05b3da7-701b-40', 'bd-87e8-780693a0', '7b13'], ['Bo', 'b', 'Dy', 'la', 'n'], ['bdylan@', 'example', '.org']]
-
-
 def test_format_data_line():
     data = [
             {
@@ -157,8 +127,8 @@ def test_format_text():
         { "size": 4, "name": "name" },
         { "size": 9, "name": "email" },
     ]
-    splitted_strings =  [['id'], ['na', 'me'], ['email']]
-    assert format_text(headers, splitted_strings) == ['│ id               │ na │ email   │', '│                  │ me │         │']
+    substrings =  [['id'], ['na', 'me'], ['email']]
+    assert format_text(headers, substrings) == ['│ id               │ na │ email   │', '│                  │ me │         │']
 
 
     headers = [
@@ -166,12 +136,12 @@ def test_format_text():
         { "size": 4, "name": "name" },
         { "size": 9, "name": "email" },
     ]
-    splitted_strings =  [['6018975a-dde7-46', '66-9436-b171c5a1', '1dde'], ['Jo', 'nh', 'Do', 'e'], ['jdoe@ex', 'ample.o', 'rg']]
-    assert format_text(headers, splitted_strings) == ['│ 6018975a-dde7-46 │ Jo │ jdoe@ex │', '│ 66-9436-b171c5a1 │ nh │ ample.o │', '│ 1dde             │ Do │ rg      │', '│                  │ e  │         │']
+    substrings =  [['6018975a-dde7-46', '66-9436-b171c5a1', '1dde'], ['Jo', 'nh', 'Do', 'e'], ['jdoe@ex', 'ample.o', 'rg']]
+    assert format_text(headers, substrings) == ['│ 6018975a-dde7-46 │ Jo │ jdoe@ex │', '│ 66-9436-b171c5a1 │ nh │ ample.o │', '│ 1dde             │ Do │ rg      │', '│                  │ e  │         │']
 
 
 
-def test_format_headers():
+def test_format_headers_line():
     headers = [
         { "size": 18, "name": "id" },
         { "size": 4, "name": "name" },
@@ -179,7 +149,7 @@ def test_format_headers():
     ]
     expected = ["│ id               │ na │ email   │", "│                  │ me │         │"]
 
-    assert format_headers(headers) == expected
+    assert format_headers_line(headers) == expected
 
 
 def test_format_lines_adjusted_to_console():
