@@ -11,13 +11,16 @@ right_corner_bottom = u'\u2518'
 vertical_line = u'\u2502'
 
 
-def get_headers_and_sizes_from_data(data):
+def get_headers_and_sizes_from_data(data, *argv):
     headers_and_sizes = []
     for item in data:
         for key, value in item.items():
-            size = max(map(lambda x:len(x[key]), data))
-            if len(key) > size:
-                size = len(key)
+            if key in argv:
+                size = max(map(lambda x:len(x[key]), data))
+                if len(key) > size:
+                    size = len(key)
+            else:
+                continue
             headers_and_sizes.append({"size": size, "name": key})
         break
     return headers_and_sizes
@@ -159,9 +162,9 @@ def adjust_text(string, column_width):
  
 
 
-def format_lines_adjusted_to_console(data, console_width):
+def format_lines_adjusted_to_console(data, console_width, *argv):
     data = _data_to_string(data)
-    headers_and_sizes = get_headers_and_sizes_from_data(data)
+    headers_and_sizes = get_headers_and_sizes_from_data(data, *argv)
     headers_and_sizes_adjusted = adjust_column_width_to_console(headers_and_sizes, console_width)
 
     lines_to_print = []
@@ -185,6 +188,10 @@ def format_lines_adjusted_to_console(data, console_width):
 
 
 
+def printer(lines):
+    for line in lines:
+        print(line)
+
 
 data = [
         {
@@ -194,7 +201,5 @@ data = [
         },
     ]
 
-lines = format_lines_adjusted_to_console(data, 32)
-for line in lines:
-    print(line)
-
+lines = format_lines_adjusted_to_console(data, 32, "id", "name")
+printer(lines)
