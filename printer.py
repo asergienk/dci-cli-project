@@ -11,11 +11,11 @@ right_corner_bottom = u"\u2518"
 vertical_line = u"\u2502"
 
 
-def get_headers_and_sizes_from_data(data, *argv):
+def get_headers_and_sizes_from_data(data, headers):
     headers_and_sizes = []
     for item in data:
         for key, value in item.items():
-            if key in argv:
+            if key in headers:
                 size = max(map(lambda x: len(x[key]), data))
                 if len(key) > size:
                     size = len(key)
@@ -161,11 +161,11 @@ def adjust_text(string, column_width):
     return "\n".join(line_to_print)
 
 
-def format_lines_adjusted_to_console(data, console_width, *argv):
+def format_lines_adjusted_to_console(data, options):
     data = _data_to_string(data)
-    headers_and_sizes = get_headers_and_sizes_from_data(data, *argv)
+    headers_and_sizes = get_headers_and_sizes_from_data(data, options['headers'])
     headers_and_sizes_adjusted = adjust_column_width_to_console(
-        headers_and_sizes, console_width
+        headers_and_sizes, options['console_width']
     )
 
     lines_to_print = []
@@ -186,6 +186,33 @@ def format_lines_adjusted_to_console(data, console_width, *argv):
         lines_to_print.append(string)
     lines_to_print.append(format_line(headers_and_sizes_adjusted, "bottom"))
     return lines_to_print
+
+
+# def format_lines_adjusted_to_console(data, console_width, *argv):
+#     data = _data_to_string(data)
+#     headers_and_sizes = get_headers_and_sizes_from_data(data, *argv)
+#     headers_and_sizes_adjusted = adjust_column_width_to_console(
+#         headers_and_sizes, console_width
+#     )
+
+#     lines_to_print = []
+#     lines_to_print.append(format_line(headers_and_sizes_adjusted, "top"))
+#     headers_line = format_headers_line(headers_and_sizes_adjusted)
+#     for string in headers_line:
+#         lines_to_print.append(string)
+#     lines_to_print.append(format_line(headers_and_sizes_adjusted, "separator"))
+
+#     for row in data[:-1]:
+#         data_line = format_data_line(row, headers_and_sizes_adjusted)
+#         for string in data_line:
+#             lines_to_print.append(string)
+#         lines_to_print.append(format_line(headers_and_sizes_adjusted, "separator"))
+
+#     data_last_row = format_data_line(data[-1], headers_and_sizes_adjusted)
+#     for string in data_last_row:
+#         lines_to_print.append(string)
+#     lines_to_print.append(format_line(headers_and_sizes_adjusted, "bottom"))
+#     return lines_to_print
 
 
 def printer(lines):

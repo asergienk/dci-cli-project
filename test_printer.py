@@ -24,12 +24,13 @@ def test_get_headers_and_sizes_from_data():
             "email": "bdylan@example.org",
         },
     ]
+    options = {"console_width": 32, "headers": ["id", "name"]}
 
     expected_headers = [
         {"size": 36, "name": "id"},
         {"size": 9, "name": "name"},
     ]
-    assert get_headers_and_sizes_from_data(data, "id", "name") == expected_headers
+    assert get_headers_and_sizes_from_data(data, options["headers"]) == expected_headers
 
 
 def test_format_line():
@@ -133,8 +134,9 @@ def test_format_data_line():
             "email": "jdoe@example.org",
         },
     ]
-    headers = get_headers_and_sizes_from_data(data, "id", "name", "email")
-    adjusted_headers = adjust_column_width_to_console(headers, console_width=32)
+    options = {"console_width": 32, "headers": ["id", "name", "email"]}
+    headers = get_headers_and_sizes_from_data(data, options["headers"])
+    adjusted_headers = adjust_column_width_to_console(headers, options["console_width"])
     assert format_data_line(data[0], adjusted_headers) == [
         "│ 6018975a-dde7-466 │ Jo │ jdoe@e │",
         "│ 6-9436-b171c5a11d │ nh │ xample │",
@@ -201,18 +203,18 @@ def test_format_lines_adjusted_to_console():
         },
     ]
 
+    options = {"console_width": 32, "headers": ["name", "email"]}
     expected = [
-        "┌───────┬──────────────┐",
-        "│ name  │ email        │",
-        "├───────┼──────────────┤",
-        "│ Jonh  │ jdoe@example │",
-        "│ Doe   │ .org         │",
-        "├───────┼──────────────┤",
-        "│ Bob D │ bdylan@examp │",
-        "│ ylan  │ le.org       │",
-        "└───────┴──────────────┘",
+        "┌──────────┬─────────────────────┐",
+        "│ name     │ email               │",
+        "├──────────┼─────────────────────┤",
+        "│ Jonh Doe │ jdoe@example.org    │",
+        "├──────────┼─────────────────────┤",
+        "│ Bob Dyla │ bdylan@example.org  │",
+        "│ n        │                     │",
+        "└──────────┴─────────────────────┘",
     ]
-    assert format_lines_adjusted_to_console(data, 22, "name", "email") == expected
+    assert format_lines_adjusted_to_console(data, options) == expected
 
     data = [
         {
@@ -221,6 +223,7 @@ def test_format_lines_adjusted_to_console():
             "email": "jdoe@example.org",
         },
     ]
+    options = {"console_width": 32, "headers": ["id", "name"]}
     expected = [
         "┌──────────────────────────┬─────┐",
         "│ id                       │ nam │",
@@ -231,4 +234,4 @@ def test_format_lines_adjusted_to_console():
         "│                          │ oe  │",
         "└──────────────────────────┴─────┘",
     ]
-    assert format_lines_adjusted_to_console(data, 32, "id", "name") == expected
+    assert format_lines_adjusted_to_console(data, options) == expected

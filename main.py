@@ -9,8 +9,14 @@ if __name__ == "__main__":
             "name": "Jonh Doe",
             "email": "jdoe@example.org",
         },
+        {
+            "id": "f05b3da7-701b-40bd-87e8-780693a07b13",
+            "name": "Bob Dylan",
+            "email": "bdylan@example.org",
+        },
     ]
-
-    console_width, rows = shutil.get_terminal_size()
-    lines = format_lines_adjusted_to_console(data, console_width, "id", "name")
+    #console_width, rows = shutil.get_terminal_size()
+    options = {"console_width": 32, "headers": ['name', 'email']}
+    lines = format_lines_adjusted_to_console(data, options)
     printer(lines)
+    
