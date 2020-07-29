@@ -16,7 +16,7 @@ if __name__ == "__main__":
         },
     ]
     #console_width, rows = shutil.get_terminal_size()
-    options = {"console_width": 32, "headers": ['name', 'email']}
+    options = {"console_width": 32, "headers": ['id', 'name']}
     lines = format_lines_adjusted_to_console(data, options)
     printer(lines)
     

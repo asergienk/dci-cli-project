@@ -27,10 +27,15 @@ def test_get_headers_and_sizes_from_data():
     options = {"console_width": 32, "headers": ["id", "name"]}
 
     expected_headers = [
-        {"size": 36, "name": "id"},
-        {"size": 9, "name": "name"},
+        {"size": 25, "name": "id"},
+        {"size": 6, "name": "name"},
     ]
-    assert get_headers_and_sizes_from_data(data, options["headers"]) == expected_headers
+    assert (
+        get_headers_and_sizes_from_data(
+            data, options["headers"], options["console_width"]
+        )
+        == expected_headers
+    )
 
 
 def test_format_line():
@@ -135,9 +140,10 @@ def test_format_data_line():
         },
     ]
     options = {"console_width": 32, "headers": ["id", "name", "email"]}
-    headers = get_headers_and_sizes_from_data(data, options["headers"])
-    adjusted_headers = adjust_column_width_to_console(headers, options["console_width"])
-    assert format_data_line(data[0], adjusted_headers) == [
+    headers = get_headers_and_sizes_from_data(
+        data, options["headers"], options["console_width"]
+    )
+    assert format_data_line(data[0], headers) == [
         "│ 6018975a-dde7-466 │ Jo │ jdoe@e │",
         "│ 6-9436-b171c5a11d │ nh │ xample │",
         "│ de                │ Do │ .org   │",
