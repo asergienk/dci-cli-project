@@ -23,11 +23,12 @@ def test_get_headers_and_sizes_from_data():
             "email": "bdylan@example.org",
         },
     ]
-    options = {"console_width": 32, "headers": ["id", "name"]}
+    options = {"console_width": 32, "headers": ["id", "name", "email"]}
 
     expected_headers = [
-        {"size": 25, "name": "id"},
-        {"size": 6, "name": "name"},
+        {"size": 16, "name": "id"},
+        {"size": 4, "name": "name"},
+        {"size": 8, "name": "email"},
     ]
     assert (
         get_headers_and_sizes_from_data(
@@ -67,9 +68,9 @@ def test_adjust_column_width_to_console():
         {"size": 18, "name": "email"},
     ]
     expected_headers = [
-        {"size": 18, "name": "id"},
+        {"size": 16, "name": "id"},
         {"size": 4, "name": "name"},
-        {"size": 9, "name": "email"},
+        {"size": 8, "name": "email"},
     ]
     assert adjust_column_width_to_console(data, console_width=32) == expected_headers
 
@@ -79,9 +80,9 @@ def test_adjust_column_width_to_console():
         {"size": 18, "name": "email"},
     ]
     expected_headers = [
-        {"size": 26, "name": "id"},
+        {"size": 24, "name": "id"},
         {"size": 6, "name": "name"},
-        {"size": 13, "name": "email"},
+        {"size": 12, "name": "email"},
     ]
     assert adjust_column_width_to_console(data, console_width=46) == expected_headers
 
@@ -143,10 +144,10 @@ def test_format_data_line():
         data, options["headers"], options["console_width"]
     )
     assert format_data_line(data[0], headers) == [
-        "│ 6018975a-dde7-466 │ Jo │ jdoe@e │",
-        "│ 6-9436-b171c5a11d │ nh │ xample │",
-        "│ de                │ Do │ .org   │",
-        "│                   │ e  │        │",
+        "│ 6018975a-dde7-4 │ Jo │ jdoe@ │",
+        "│ 666-9436-b171c5 │ nh │ examp │",
+        "│ a11dde          │ Do │ le.or │",
+        "│                 │ e  │ g     │",
     ]
 
 
@@ -201,6 +202,27 @@ def test_format_lines_adjusted_to_console():
             "name": "Jonh Doe",
             "email": "jdoe@example.org",
         },
+    ]
+    options = {"console_width": 32, "headers": ["id", "name", "email"]}
+    expected = [
+        "┌─────────────────┬────┬───────┐",
+        "│ id              │ na │ email │",
+        "│                 │ me │       │",
+        "├─────────────────┼────┼───────┤",
+        "│ 6018975a-dde7-4 │ Jo │ jdoe@ │",
+        "│ 666-9436-b171c5 │ nh │ examp │",
+        "│ a11dde          │ Do │ le.or │",
+        "│                 │ e  │ g     │",
+        "└─────────────────┴────┴───────┘",
+    ]
+    assert format_lines_adjusted_to_console(data, options) == expected
+
+    data = [
+        {
+            "id": "6018975a-dde7-4666-9436-b171c5a11dde",
+            "name": "Jonh Doe",
+            "email": "jdoe@example.org",
+        },
         {
             "id": "f05b3da7-701b-40bd-87e8-780693a07b13",
             "name": "Bob Dylan",
@@ -210,14 +232,14 @@ def test_format_lines_adjusted_to_console():
 
     options = {"console_width": 32, "headers": ["name", "email"]}
     expected = [
-        "┌──────────┬─────────────────────┐",
-        "│ name     │ email               │",
-        "├──────────┼─────────────────────┤",
-        "│ Jonh Doe │ jdoe@example.org    │",
-        "├──────────┼─────────────────────┤",
-        "│ Bob Dyla │ bdylan@example.org  │",
-        "│ n        │                     │",
-        "└──────────┴─────────────────────┘",
+        "┌──────────┬───────────────────┐",
+        "│ name     │ email             │",
+        "├──────────┼───────────────────┤",
+        "│ Jonh Doe │ jdoe@example.org  │",
+        "├──────────┼───────────────────┤",
+        "│ Bob Dyla │ bdylan@example.or │",
+        "│ n        │ g                 │",
+        "└──────────┴───────────────────┘",
     ]
     assert format_lines_adjusted_to_console(data, options) == expected
 
@@ -230,12 +252,12 @@ def test_format_lines_adjusted_to_console():
     ]
     options = {"console_width": 32, "headers": ["id"]}
     expected = [
-        "┌────────────────────────────────┐",
-        "│ id                             │",
-        "├────────────────────────────────┤",
-        "│ 6018975a-dde7-4666-9436-b171c5 │",
-        "│ a11dde                         │",
-        "└────────────────────────────────┘",
+        "┌──────────────────────────────┐",
+        "│ id                           │",
+        "├──────────────────────────────┤",
+        "│ 6018975a-dde7-4666-9436-b171 │",
+        "│ c5a11dde                     │",
+        "└──────────────────────────────┘",
     ]
     assert format_lines_adjusted_to_console(data, options) == expected
 

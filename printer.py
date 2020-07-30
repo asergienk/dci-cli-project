@@ -33,12 +33,15 @@ def get_headers_and_sizes_from_data(data, headers, console_width):
 
 def adjust_column_width_to_console(headers, console_width):
     sum_of_sizes = 0
+    num_of_items = 0
 
     for item in headers:
         sum_of_sizes += int(item["size"])
+        num_of_items += 1
 
+    console_width -= (num_of_items + 1)
     for item in headers:
-        item["size"] = int(console_width * (int(item["size"]) / sum_of_sizes))
+        item["size"] = round(console_width * (int(item["size"]) / sum_of_sizes))
 
     return headers
 
