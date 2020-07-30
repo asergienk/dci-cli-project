@@ -1,6 +1,5 @@
 from printer import get_headers_and_sizes_from_data
 from printer import format_line
-
 from printer import adjust_column_width_to_console
 from printer import adjust_text
 from printer import split_strings
@@ -229,15 +228,40 @@ def test_format_lines_adjusted_to_console():
             "email": "jdoe@example.org",
         },
     ]
-    options = {"console_width": 32, "headers": ["id", "name"]}
+    options = {"console_width": 32, "headers": ["id"]}
     expected = [
-        "┌──────────────────────────┬─────┐",
-        "│ id                       │ nam │",
-        "│                          │ e   │",
-        "├──────────────────────────┼─────┤",
-        "│ 6018975a-dde7-4666-9436- │ Jon │",
-        "│ b171c5a11dde             │ h D │",
-        "│                          │ oe  │",
-        "└──────────────────────────┴─────┘",
+        "┌────────────────────────────────┐",
+        "│ id                             │",
+        "├────────────────────────────────┤",
+        "│ 6018975a-dde7-4666-9436-b171c5 │",
+        "│ a11dde                         │",
+        "└────────────────────────────────┘",
     ]
     assert format_lines_adjusted_to_console(data, options) == expected
+
+
+# #PASSING ONLY DATA TESTS
+# def test_format_lines_adjusted_to_console():
+#     data = [
+#         {
+#             "id": "6018975a-dde7-4666-9436-b171c5a11dde",
+#             "name": "Jonh Doe",
+#             "email": "jdoe@example.org",
+#         },
+#         {
+#             "id": "f05b3da7-701b-40bd-87e8-780693a07b13",
+#             "name": "Bob Dylan",
+#             "email": "bdylan@example.org",
+#         },
+#     ]
+
+#     expected = [
+#         "┌──────────────────────────────────────┬───────────┬────────────────────┐",
+#         "│ id                                   │ name      │ email              │",
+#         "├──────────────────────────────────────┼───────────┼────────────────────┤",
+#         "│ 6018975a-dde7-4666-9436-b171c5a11dde │ Jonh Doe  │ jdoe@example.org   │",
+#         "├──────────────────────────────────────┼───────────┼────────────────────┤",
+#         "│ f05b3da7-701b-40bd-87e8-780693a07b13 │ Bob Dylan │ bdylan@example.org │",
+#         "└──────────────────────────────────────┴───────────┴────────────────────┘",
+#     ]
+#     assert format_lines_adjusted_to_console(data) == expected

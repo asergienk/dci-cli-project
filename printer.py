@@ -190,34 +190,74 @@ def format_lines_adjusted_to_console(data, options):
     return lines_to_print
 
 
-# def format_lines_adjusted_to_console(data):
-#     data = _data_to_string(data)
-#     headers_and_sizes = get_headers_and_sizes_from_data(data)
-#     headers_and_sizes_adjusted = adjust_column_width_to_console(
-#         headers_and_sizes)
-#     )
-
-#     lines_to_print = []
-#     lines_to_print.append(format_line(headers_and_sizes_adjusted, "top"))
-#     headers_line = format_headers_line(headers_and_sizes_adjusted)
-#     for string in headers_line:
-#         lines_to_print.append(string)
-#     lines_to_print.append(format_line(headers_and_sizes_adjusted, "separator"))
-
-#     for row in data[:-1]:
-#         data_line = format_data_line(row, headers_and_sizes_adjusted)
-#         for string in data_line:
-#             lines_to_print.append(string)
-#         lines_to_print.append(format_line(headers_and_sizes_adjusted, "separator"))
-
-#     data_last_row = format_data_line(data[-1], headers_and_sizes_adjusted)
-#     for string in data_last_row:
-#         lines_to_print.append(string)
-#     lines_to_print.append(format_line(headers_and_sizes_adjusted, "bottom"))
-#     return lines_to_print
-
-
 def printer(lines):
     for line in lines:
         print(line)
+
+
+
+# # PASSING ONLY DATA
+# def get_headers_and_sizes_from_data(data):
+#     headers_and_sizes = []
+#     for item in data:
+#         for key, value in item.items():
+#             size = max(map(lambda x: len(x[key]), data))
+#             if len(key) > size:
+#                 size = len(key)
+#             headers_and_sizes.append({"size": size, "name": key})
+#         break
+#     return headers_and_sizes
+
+
+# def format_line(headers, line_position):
+#     line = []
+#     for header in headers:
+#         column_width = header["size"] + 2
+#         line.append(hor_line * column_width)
+#     if line_position == "top":
+#         line = left_corner_top + top_connector.join(line) + right_corner_top
+#     if line_position == "separator":
+#         line = left_side + cross.join(line) + right_side
+#     if line_position == "bottom":
+#         line = left_corner_bottom + bottom_connector.join(line) + right_corner_bottom
+#     return line
+
+
+# def format_headers(headers):
+#     headers_row = []
+#     for header in headers:
+#         column_width = header["size"] + 2
+#         headers_row.append(header["name"].ljust(column_width - 1).rjust(column_width))
+#     headers_row = vertical_line + vertical_line.join(headers_row) + vertical_line
+#     return headers_row
+
+
+# def format_data_line(data, headers):
+#     data_row = []
+#     for header in headers:
+#         column_width = header["size"] + 2
+#         data_row.append(
+#             data[header["name"]].ljust(column_width - 1).rjust(column_width)
+#         )
+#     data_row = vertical_line + vertical_line.join(data_row) + vertical_line
+#     return data_row
+
+
+# def format_lines_adjusted_to_console(data):
+#     data = _data_to_string(data)
+#     headers_and_sizes = get_headers_and_sizes_from_data(data)
+#     print(headers_and_sizes)
+#     lines_to_print = []
+#     lines_to_print.append(format_line(headers_and_sizes, "top"))
+#     lines_to_print.append(format_headers(headers_and_sizes))
+#     lines_to_print.append(format_line(headers_and_sizes, "separator"))
+
+#     for row in data[:-1]:
+#         lines_to_print.append(format_data_line(row, headers_and_sizes))
+#         lines_to_print.append(format_line(headers_and_sizes, "separator"))
+
+#     lines_to_print.append(format_data_line(data[-1], headers_and_sizes))
+#     lines_to_print.append(format_line(headers_and_sizes, "bottom"))
+#     return lines_to_print
+
 
