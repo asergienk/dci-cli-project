@@ -88,11 +88,11 @@ def test_adjust_column_width_to_console():
 
 def test_adjust_text():
     string = "Jonh Doe"
-    assert adjust_text(string, column_width=5) == "Jonh\nDoe"
+    assert adjust_text(string, column_width=5) == "Jon\nh D\noe"
 
     string = "6018975a-dde7-4666-9436-b171c5a11dde"
     assert (
-        adjust_text(string, column_width=7)
+        adjust_text(string, column_width=9)
         == "6018975\na-dde7-\n4666-94\n36-b171\nc5a11dd\ne"
     )
 

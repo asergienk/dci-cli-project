@@ -44,7 +44,7 @@ def adjust_column_width_to_console(headers, console_width):
 def format_line(headers, line_position):
     line = []
     for header in headers:
-        column_width = header["size"]
+        column_width = header["size"] 
         line.append(hor_line * column_width)
     if line_position == "top":
         line = left_corner_top + top_connector.join(line) + right_corner_top
@@ -85,8 +85,8 @@ def create_line_content(substrings):
 def format_data_line(row, headers):
     data_row = []
     for header in headers:
-        string_width = header["size"] - 2
-        data_row.append(adjust_text(row[header["name"]], string_width))
+        column_width = header["size"]
+        data_row.append(adjust_text(row[header["name"]], column_width))
     substrings = split_strings(data_row)
     data_line = format_text(headers, substrings)
     return data_line
@@ -95,8 +95,8 @@ def format_data_line(row, headers):
 def format_headers_line(headers):
     headers_row = []
     for header in headers:
-        string_width = header["size"] - 2
-        headers_row.append(adjust_text(header["name"], string_width))
+        column_width = header["size"] 
+        headers_row.append(adjust_text(header["name"], column_width))
     substrings = split_strings(headers_row)
     headers_line = format_text(headers, substrings)
     return headers_line
@@ -128,15 +128,16 @@ def _data_to_string(data):
 
 
 def adjust_text(string, column_width):
+    string_width = column_width - 2
     char_num_so_far = 0
     line = []
     line_to_print = []
     for word in string.split():
-        if char_num_so_far + len(word) + 1 <= column_width:
+        if char_num_so_far + len(word) + 1 <= string_width:
             line.append(word)
             char_num_so_far += len(word) + 1
         else:
-            char_left = column_width - char_num_so_far
+            char_left = string_width - char_num_so_far
             if char_left == 1:
                 line.append(word[char_left - 1])
             if char_left > 1:
@@ -147,16 +148,16 @@ def adjust_text(string, column_width):
             new_word = word[char_left:]
             length = len(new_word)
             start = 0
-            end = column_width
+            end = string_width
             while length > 0:
-                if length < column_width:
+                if length < string_width:
                     line.append(new_word[start : start + length])
                     char_num_so_far = length + 1
                     break
                 line_to_print.append(new_word[start:end])
-                length -= column_width
-                start += column_width
-                end = start + column_width
+                length -= string_width
+                start += string_width
+                end = start + string_width
 
     if line:
         line_to_print.append(" ".join(line))
@@ -169,7 +170,6 @@ def format_lines_adjusted_to_console(data, options):
     headers_and_sizes = get_headers_and_sizes_from_data(
         data, options["headers"], options["console_width"]
     )
-    print(headers_and_sizes)
     lines_to_print = []
     lines_to_print.append(format_line(headers_and_sizes, "top"))
     headers_line = format_headers_line(headers_and_sizes)
@@ -195,8 +195,7 @@ def printer(lines):
         print(line)
 
 
-
-# # PASSING ONLY DATA
+# # # PASSING ONLY DATA
 # def get_headers_and_sizes_from_data(data):
 #     headers_and_sizes = []
 #     for item in data:
@@ -209,24 +208,10 @@ def printer(lines):
 #     return headers_and_sizes
 
 
-# def format_line(headers, line_position):
-#     line = []
-#     for header in headers:
-#         column_width = header["size"] + 2
-#         line.append(hor_line * column_width)
-#     if line_position == "top":
-#         line = left_corner_top + top_connector.join(line) + right_corner_top
-#     if line_position == "separator":
-#         line = left_side + cross.join(line) + right_side
-#     if line_position == "bottom":
-#         line = left_corner_bottom + bottom_connector.join(line) + right_corner_bottom
-#     return line
-
-
 # def format_headers(headers):
 #     headers_row = []
 #     for header in headers:
-#         column_width = header["size"] + 2
+#         column_width = header["size"] 
 #         headers_row.append(header["name"].ljust(column_width - 1).rjust(column_width))
 #     headers_row = vertical_line + vertical_line.join(headers_row) + vertical_line
 #     return headers_row
@@ -235,7 +220,7 @@ def printer(lines):
 # def format_data_line(data, headers):
 #     data_row = []
 #     for header in headers:
-#         column_width = header["size"] + 2
+#         column_width = header["size"] 
 #         data_row.append(
 #             data[header["name"]].ljust(column_width - 1).rjust(column_width)
 #         )
@@ -246,6 +231,8 @@ def printer(lines):
 # def format_lines_adjusted_to_console(data):
 #     data = _data_to_string(data)
 #     headers_and_sizes = get_headers_and_sizes_from_data(data)
+#     for header in headers_and_sizes:
+#         header["size"] += 2
 #     print(headers_and_sizes)
 #     lines_to_print = []
 #     lines_to_print.append(format_line(headers_and_sizes, "top"))
