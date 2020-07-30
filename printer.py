@@ -42,7 +42,6 @@ def adjust_column_width_to_console(headers, console_width):
     console_width -= (num_of_items + 1)
     for item in headers:
         item["size"] = round(console_width * (int(item["size"]) / sum_of_sizes))
-
     return headers
 
 
@@ -172,9 +171,10 @@ def adjust_text(string, column_width):
 
 def get_default_console_width():
     console_width, rows = shutil.get_terminal_size()
+    print(console_width)
     return console_width
 
-
+#DEFAULT OPTIONS
 def format_lines_adjusted_to_console(data, options={}):
     if not data:
         return []
@@ -185,9 +185,9 @@ def format_lines_adjusted_to_console(data, options={}):
         else get_default_console_width()
     )
     headers = options["headers"] if "headers" in options else data[0].keys()
-
     data = _data_to_string(data)
     headers_and_sizes = get_headers_and_sizes_from_data(data, headers, console_width)
+    print(headers_and_sizes)
     lines_to_print = []
     lines_to_print.append(format_line(headers_and_sizes, "top"))
     headers_line = format_headers_line(headers_and_sizes)

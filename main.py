@@ -8,11 +8,11 @@ if __name__ == "__main__":
             "name": "Jonh Doe",
             "email": "jdoe@example.org",
         },
-        {
-            "id": "f05b3da7-701b-40bd-87e8-780693a07b13",
-            "name": "Bob Dylan",
-            "email": "bdylan@example.org",
-        },
+        # {
+        #     "id": "f05b3da7-701b-40bd-87e8-780693a07b13",
+        #     "name": "Bob Dylan",
+        #     "email": "bdylan@example.org",
+        # },
     ]
     #options = {"console_width": 32, "headers": ['id', 'name', 'email']}
     # lines = format_lines_adjusted_to_console(data, options)

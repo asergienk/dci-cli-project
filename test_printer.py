@@ -261,6 +261,23 @@ def test_format_lines_adjusted_to_console():
     ]
     assert format_lines_adjusted_to_console(data, options) == expected
 
+    #DEFAULT OPTIONS
+    data = [
+        {
+            "id": "6018975a-dde7-4666-9436-b171c5a11dde",
+            "name": "Jonh Doe",
+            "email": "jdoe@example.org",
+        },
+    ]
+    expected = [
+        "┌──────────────────────────────────────────────┬──────────┬────────────────────┐",
+        "│ id                                           │ name     │ email              │",
+        "├──────────────────────────────────────────────┼──────────┼────────────────────┤",
+        "│ 6018975a-dde7-4666-9436-b171c5a11dde         │ Jonh Doe │ jdoe@example.org   │",
+        "└──────────────────────────────────────────────┴──────────┴────────────────────┘",
+    ]
+    assert format_lines_adjusted_to_console(data) == expected
+
 
 # #PASSING ONLY DATA TESTS
 # def test_format_lines_adjusted_to_console():
