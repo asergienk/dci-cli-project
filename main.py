@@ -1,4 +1,3 @@
-import shutil
 from printer import format_lines_adjusted_to_console
 from printer import printer
 
@@ -15,11 +14,11 @@ if __name__ == "__main__":
             "email": "bdylan@example.org",
         },
     ]
-    #console_width, rows = shutil.get_terminal_size()
-    options = {"console_width": 32, "headers": ['name', 'email']}
+
+    #options = {"console_width": 32, "headers": ['name', 'email']}
     # lines = format_lines_adjusted_to_console(data, options)
     # printer(lines)
 
 
-    lines = format_lines_adjusted_to_console(data, options)
+    lines = format_lines_adjusted_to_console(data, options={})
     printer(lines)

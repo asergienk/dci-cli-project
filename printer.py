@@ -1,3 +1,5 @@
+import shutil
+
 hor_line = u"\u2500"
 left_corner_top = u"\u250C"
 right_corner_top = u"\u2510"
@@ -44,7 +46,7 @@ def adjust_column_width_to_console(headers, console_width):
 def format_line(headers, line_position):
     line = []
     for header in headers:
-        column_width = header["size"] 
+        column_width = header["size"]
         line.append(hor_line * column_width)
     if line_position == "top":
         line = left_corner_top + top_connector.join(line) + right_corner_top
@@ -95,7 +97,7 @@ def format_data_line(row, headers):
 def format_headers_line(headers):
     headers_row = []
     for header in headers:
-        column_width = header["size"] 
+        column_width = header["size"]
         headers_row.append(adjust_text(header["name"], column_width))
     substrings = split_strings(headers_row)
     headers_line = format_text(headers, substrings)
@@ -165,11 +167,24 @@ def adjust_text(string, column_width):
     return "\n".join(line_to_print)
 
 
-def format_lines_adjusted_to_console(data, options):
-    data = _data_to_string(data)
-    headers_and_sizes = get_headers_and_sizes_from_data(
-        data, options["headers"], options["console_width"]
+def get_default_console_width():
+    console_width, rows = shutil.get_terminal_size()
+    return console_width
+
+
+def format_lines_adjusted_to_console(data, options={}):
+    if not data:
+        return []
+
+    console_width = (
+        options["console_width"]
+        if "console_width" in options
+        else get_default_console_width()
     )
+    headers = options["headers"] if "headers" in options else data[0].keys()
+
+    data = _data_to_string(data)
+    headers_and_sizes = get_headers_and_sizes_from_data(data, headers, console_width)
     lines_to_print = []
     lines_to_print.append(format_line(headers_and_sizes, "top"))
     headers_line = format_headers_line(headers_and_sizes)
@@ -211,7 +226,7 @@ def printer(lines):
 # def format_headers(headers):
 #     headers_row = []
 #     for header in headers:
-#         column_width = header["size"] 
+#         column_width = header["size"]
 #         headers_row.append(header["name"].ljust(column_width - 1).rjust(column_width))
 #     headers_row = vertical_line + vertical_line.join(headers_row) + vertical_line
 #     return headers_row
@@ -220,7 +235,7 @@ def printer(lines):
 # def format_data_line(data, headers):
 #     data_row = []
 #     for header in headers:
-#         column_width = header["size"] 
+#         column_width = header["size"]
 #         data_row.append(
 #             data[header["name"]].ljust(column_width - 1).rjust(column_width)
 #         )
@@ -246,5 +261,4 @@ def printer(lines):
 #     lines_to_print.append(format_data_line(data[-1], headers_and_sizes))
 #     lines_to_print.append(format_line(headers_and_sizes, "bottom"))
 #     return lines_to_print
-
 
