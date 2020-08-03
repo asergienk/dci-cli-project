@@ -363,26 +363,6 @@ def test_format_lines_adjusted_to_console():
         ]
         assert format_lines_adjusted_to_console(data) == expected
 
-    # NON EXISTING HEADER
-    with mock.patch("printer.get_default_console_width") as post_mock:
-        post_mock.return_value = 207
-        data = [
-            {
-                "id": "6018975a-dde7-4666-9436-b171c5a11dde",
-                "name": "Jonh Doe",
-                "email": "jdoe@example.org",
-            },
-        ]
-        options = {"headers": ["address"]}
-        expected = [
-            "┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬───────────────────────────┬──────────────────────────────────────────────────────┐",
-            "│ id                                                                                                                       │ name                      │ email                                                │",
-            "├──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────────────────────┼──────────────────────────────────────────────────────┤",
-            "│ 6018975a-dde7-4666-9436-b171c5a11dde                                                                                     │ Jonh Doe                  │ jdoe@example.org                                     │",
-            "└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴───────────────────────────┴──────────────────────────────────────────────────────┘",
-        ]
-        assert format_lines_adjusted_to_console(data, options) == expected
-
 
     # EMPTY DATA, NO OPTIONS
     data = []
