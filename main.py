@@ -14,11 +14,11 @@ if __name__ == "__main__":
         #     "email": "bdylan@example.org",
         # },
     ]
-    #options = {"console_width": 32, "headers": ['id', 'name', 'email']}
+    #options = {"console_width": 32, "headers": ['id', 'name', 'phone number']}
     # lines = format_lines_adjusted_to_console(data, options)
     # printer(lines)
 
-
+    
     lines = format_lines_adjusted_to_console(data)
     printer(lines)
 

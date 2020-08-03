@@ -8,7 +8,7 @@ from printer import format_data_line
 from printer import format_text
 from printer import format_headers_line
 from printer import format_lines_adjusted_to_console
-
+from unittest import mock
 
 def test_get_headers_and_sizes_from_data():
     data = [
@@ -278,29 +278,51 @@ def test_format_lines_adjusted_to_console():
     ]
     assert format_lines_adjusted_to_console(data) == expected
 
+    #DATA AND CONSOLE WIDTH -> default options
+    data = [
+        {
+            "id": "6018975a-dde7-4666-9436-b171c5a11dde",
+            "name": "Jonh Doe",
+            "email": "jdoe@example.org",
+        },
+    ]
+    options = {"console_width": 32}
+    expected = [
+        "┌─────────────────┬────┬───────┐",
+        "│ id              │ na │ email │",
+        "│                 │ me │       │",
+        "├─────────────────┼────┼───────┤",
+        "│ 6018975a-dde7-4 │ Jo │ jdoe@ │",
+        "│ 666-9436-b171c5 │ nh │ examp │",
+        "│ a11dde          │ Do │ le.or │",
+        "│                 │ e  │ g     │",
+        "└─────────────────┴────┴───────┘",
+    ]
+    assert format_lines_adjusted_to_console(data, options) == expected
+ 
+ 
+    #DATA AND HEADERS -> default console width
+    with mock.patch("printer.get_default_console_width") as post_mock:
+        post_mock.return_value = 207
+        data = [
+            {
+                "id": "6018975a-dde7-4666-9436-b171c5a11dde",
+                "name": "Jonh Doe",
+                "email": "jdoe@example.org",
+            },
+        ]
+        options = {"headers": ['id', 'name', 'email']}
+        expected = [
+            "┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬───────────────────────────┬──────────────────────────────────────────────────────┐",
+            "│ id                                                                                                                       │ name                      │ email                                                │",
+            "├──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────────────────────┼──────────────────────────────────────────────────────┤",
+            "│ 6018975a-dde7-4666-9436-b171c5a11dde                                                                                     │ Jonh Doe                  │ jdoe@example.org                                     │",
+            "└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴───────────────────────────┴──────────────────────────────────────────────────────┘",
+        ]
+        assert format_lines_adjusted_to_console(data, options) == expected
 
-# #PASSING ONLY DATA TESTS
-# def test_format_lines_adjusted_to_console():
-#     data = [
-#         {
-#             "id": "6018975a-dde7-4666-9436-b171c5a11dde",
-#             "name": "Jonh Doe",
-#             "email": "jdoe@example.org",
-#         },
-#         {
-#             "id": "f05b3da7-701b-40bd-87e8-780693a07b13",
-#             "name": "Bob Dylan",
-#             "email": "bdylan@example.org",
-#         },
-#     ]
 
-#     expected = [
-#         "┌──────────────────────────────────────┬───────────┬────────────────────┐",
-#         "│ id                                   │ name      │ email              │",
-#         "├──────────────────────────────────────┼───────────┼────────────────────┤",
-#         "│ 6018975a-dde7-4666-9436-b171c5a11dde │ Jonh Doe  │ jdoe@example.org   │",
-#         "├──────────────────────────────────────┼───────────┼────────────────────┤",
-#         "│ f05b3da7-701b-40bd-87e8-780693a07b13 │ Bob Dylan │ bdylan@example.org │",
-#         "└──────────────────────────────────────┴───────────┴────────────────────┘",
-#     ]
-#     assert format_lines_adjusted_to_console(data) == expected
+    #EMPTY DATA, NO OPTIONS
+    data = []
+
+    assert format_lines_adjusted_to_console(data) == []
