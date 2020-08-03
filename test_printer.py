@@ -10,6 +10,7 @@ from printer import format_headers_line
 from printer import format_lines_adjusted_to_console
 from unittest import mock
 
+
 def test_get_headers_and_sizes_from_data():
     data = [
         {
@@ -261,24 +262,26 @@ def test_format_lines_adjusted_to_console():
     ]
     assert format_lines_adjusted_to_console(data, options) == expected
 
-    #DEFAULT OPTIONS
-    data = [
-        {
-            "id": "6018975a-dde7-4666-9436-b171c5a11dde",
-            "name": "Jonh Doe",
-            "email": "jdoe@example.org",
-        },
-    ]
-    expected = [
-        "┌──────────────────────────────────────────────┬──────────┬────────────────────┐",
-        "│ id                                           │ name     │ email              │",
-        "├──────────────────────────────────────────────┼──────────┼────────────────────┤",
-        "│ 6018975a-dde7-4666-9436-b171c5a11dde         │ Jonh Doe │ jdoe@example.org   │",
-        "└──────────────────────────────────────────────┴──────────┴────────────────────┘",
-    ]
-    assert format_lines_adjusted_to_console(data) == expected
+    # DEFAULT OPTIONS
+    with mock.patch("printer.get_default_console_width") as post_mock:
+        post_mock.return_value = 207
+        data = [
+            {
+                "id": "6018975a-dde7-4666-9436-b171c5a11dde",
+                "name": "Jonh Doe",
+                "email": "jdoe@example.org",
+            },
+        ]
+        expected = [
+            "┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬───────────────────────────┬──────────────────────────────────────────────────────┐",
+            "│ id                                                                                                                       │ name                      │ email                                                │",
+            "├──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────────────────────┼──────────────────────────────────────────────────────┤",
+            "│ 6018975a-dde7-4666-9436-b171c5a11dde                                                                                     │ Jonh Doe                  │ jdoe@example.org                                     │",
+            "└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴───────────────────────────┴──────────────────────────────────────────────────────┘",
+        ]
+        assert format_lines_adjusted_to_console(data) == expected
 
-    #DATA AND CONSOLE WIDTH -> default options
+    # DEFAULT HEADERS
     data = [
         {
             "id": "6018975a-dde7-4666-9436-b171c5a11dde",
@@ -299,9 +302,8 @@ def test_format_lines_adjusted_to_console():
         "└─────────────────┴────┴───────┘",
     ]
     assert format_lines_adjusted_to_console(data, options) == expected
- 
- 
-    #DATA AND HEADERS -> default console width
+
+    # DEFAULT CONSOLE WIDTH
     with mock.patch("printer.get_default_console_width") as post_mock:
         post_mock.return_value = 207
         data = [
@@ -311,7 +313,67 @@ def test_format_lines_adjusted_to_console():
                 "email": "jdoe@example.org",
             },
         ]
-        options = {"headers": ['id', 'name', 'email']}
+        options = {"headers": ["id", "name", "email"]}
+        expected = [
+            "┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬───────────────────────────┬──────────────────────────────────────────────────────┐",
+            "│ id                                                                                                                       │ name                      │ email                                                │",
+            "├──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────────────────────┼──────────────────────────────────────────────────────┤",
+            "│ 6018975a-dde7-4666-9436-b171c5a11dde                                                                                     │ Jonh Doe                  │ jdoe@example.org                                     │",
+            "└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴───────────────────────────┴──────────────────────────────────────────────────────┘",
+        ]
+        assert format_lines_adjusted_to_console(data, options) == expected
+
+    # DEFAULT CONSOLE WIDTH, 1 COLUMN
+    with mock.patch("printer.get_default_console_width") as post_mock:
+        post_mock.return_value = 207
+        data = [
+            {
+                "id": "6018975a-dde7-4666-9436-b171c5a11dde",
+                "name": "Jonh Doe",
+                "email": "jdoe@example.org",
+            },
+        ]
+        options = {"headers": ["id"]}
+        expected = [
+            "┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐",
+            "│ id                                                                                                                                                                                                          │",
+            "├─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤",
+            "│ 6018975a-dde7-4666-9436-b171c5a11dde                                                                                                                                                                        │",
+            "└─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘",
+        ]
+        assert format_lines_adjusted_to_console(data, options) == expected
+
+    # DIFFERENT DATA FORMATS
+    with mock.patch("printer.get_default_console_width") as post_mock:
+        post_mock.return_value = 207
+        data = [
+            {
+                "id": True,
+                "name": "Jonh Doe",
+                "email": 42,
+            },
+        ]
+
+        expected = [
+            "┌────────────────────────────────────────────────┬────────────────────────────────────────────────────────────────────────────────────────────────┬───────────────────────────────────────────────────────────┐",
+            "│ id                                             │ name                                                                                           │ email                                                     │",
+            "├────────────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────┼───────────────────────────────────────────────────────────┤",
+            "│ True                                           │ Jonh Doe                                                                                       │ 42                                                        │",
+            "└────────────────────────────────────────────────┴────────────────────────────────────────────────────────────────────────────────────────────────┴───────────────────────────────────────────────────────────┘",
+        ]
+        assert format_lines_adjusted_to_console(data) == expected
+
+    # NON EXISTING HEADER
+    with mock.patch("printer.get_default_console_width") as post_mock:
+        post_mock.return_value = 207
+        data = [
+            {
+                "id": "6018975a-dde7-4666-9436-b171c5a11dde",
+                "name": "Jonh Doe",
+                "email": "jdoe@example.org",
+            },
+        ]
+        options = {"headers": ["address"]}
         expected = [
             "┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬───────────────────────────┬──────────────────────────────────────────────────────┐",
             "│ id                                                                                                                       │ name                      │ email                                                │",
@@ -322,7 +384,7 @@ def test_format_lines_adjusted_to_console():
         assert format_lines_adjusted_to_console(data, options) == expected
 
 
-    #EMPTY DATA, NO OPTIONS
+    # EMPTY DATA, NO OPTIONS
     data = []
 
     assert format_lines_adjusted_to_console(data) == []
