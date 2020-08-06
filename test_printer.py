@@ -347,11 +347,7 @@ def test_format_lines_adjusted_to_console():
     with mock.patch("printer.get_default_console_width") as post_mock:
         post_mock.return_value = 207
         data = [
-            {
-                "id": True,
-                "name": "Jonh Doe",
-                "email": 42,
-            },
+            {"id": True, "name": "Jonh Doe", "email": 42,},
         ]
 
         expected = [
@@ -362,7 +358,6 @@ def test_format_lines_adjusted_to_console():
             "└────────────────────────────────────────────────┴────────────────────────────────────────────────────────────────────────────────────────────────┴───────────────────────────────────────────────────────────┘",
         ]
         assert format_lines_adjusted_to_console(data) == expected
-
 
     # EMPTY DATA, NO OPTIONS
     data = []

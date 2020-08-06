@@ -39,7 +39,7 @@ def adjust_column_width_to_console(headers, console_width):
         sum_of_sizes += int(item["size"])
         num_of_items += 1
 
-    console_width -= (num_of_items + 1)
+    console_width -= num_of_items + 1
     for item in headers:
         item["size"] = round(console_width * (int(item["size"]) / sum_of_sizes))
     total_width = sum([item["size"] for item in headers])
@@ -53,7 +53,7 @@ def format_line(headers, line_position):
     line = []
     for header in headers:
         column_width = header["size"]
-        line.append(hor_line * column_width)
+        line.append(hor_line * int(column_width))
     if line_position == "top":
         line = left_corner_top + top_connector.join(line) + right_corner_top
     if line_position == "separator":
@@ -153,7 +153,7 @@ def adjust_text(string, column_width):
             line_to_print.append(" ".join(line))
             char_num_so_far = 0
             line = []
-            new_word = word[char_left:]
+            new_word = word[int(char_left):]
             length = len(new_word)
             start = 0
             end = string_width
@@ -162,7 +162,7 @@ def adjust_text(string, column_width):
                     line.append(new_word[start : start + length])
                     char_num_so_far = length + 1
                     break
-                line_to_print.append(new_word[start:end])
+                line_to_print.append(new_word[int(start):int(end)])
                 length -= string_width
                 start += string_width
                 end = start + string_width
@@ -176,6 +176,7 @@ def adjust_text(string, column_width):
 def get_default_console_width():
     console_width, rows = shutil.get_terminal_size()
     return console_width
+
 
 def format_lines_adjusted_to_console(data, options={}):
     if not data:
@@ -212,4 +213,3 @@ def format_lines_adjusted_to_console(data, options={}):
 def printer(lines):
     for line in lines:
         print(line)
-
