@@ -39,7 +39,7 @@ def adjust_column_width_to_console(headers, console_width):
 
     console_width -= num_of_items + 1
     for item in headers:
-        item["size"] = round(console_width * (int(item["size"]) / sum_of_sizes))
+        item["size"] = int(round(console_width * (float(item["size"]) / sum_of_sizes)))
     total_width = sum([item["size"] for item in headers])
     while total_width > console_width:
         headers[-1]["size"] -= 1
@@ -140,7 +140,7 @@ def adjust_text(string, column_width):
     line_to_print = []
     for word in string.split():
         if ((char_num_so_far + len(word) + 1) <= string_width):
-            line.append(word) #stops here
+            line.append(word)
             char_num_so_far += len(word) + 1
         else:
             char_left = string_width - char_num_so_far
@@ -177,9 +177,8 @@ def get_default_console_width():
         console_width, rows = shutil.get_terminal_size()
     except Exception:
         import termios, fcntl, struct, sys
-        s = struct.pack("HHHH", 0, 0, 0, 0)
         x = fcntl.ioctl(sys.stdout.fileno(), termios.TIOCGWINSZ, s)
-        rows, console_width, x_pixels, y_pixels = struct.unpack("HHHH", x)
+        rows, console_width = struct.unpack("hh", x)
     return console_width
 
 
@@ -194,6 +193,7 @@ def format_lines_adjusted_to_console(data, options={}):
     )
     headers = options["headers"] if "headers" in options else data[0].keys()
     data = _data_to_string(data)
+
     headers_and_sizes = get_headers_and_sizes_from_data(data, headers, console_width)
     lines_to_print = []
     lines_to_print.append(format_line(headers_and_sizes, "top"))

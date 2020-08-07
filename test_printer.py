@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from printer import get_headers_and_sizes_from_data
 from printer import format_line
 from printer import adjust_column_width_to_console
@@ -8,7 +9,10 @@ from printer import format_data_line
 from printer import format_text
 from printer import format_headers_line
 from printer import format_lines_adjusted_to_console
-from unittest import mock
+try:
+    from unittest import mock
+except ImportError:
+    import mock
 
 
 def test_get_headers_and_sizes_from_data():
