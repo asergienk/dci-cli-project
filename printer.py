@@ -1,5 +1,3 @@
-import shutil
-
 hor_line = u"\u2500"
 left_corner_top = u"\u250C"
 right_corner_top = u"\u2510"
@@ -141,8 +139,8 @@ def adjust_text(string, column_width):
     line = []
     line_to_print = []
     for word in string.split():
-        if char_num_so_far + len(word) + 1 <= string_width:
-            line.append(word)
+        if ((char_num_so_far + len(word) + 1) <= string_width):
+            line.append(word) #stops here
             char_num_so_far += len(word) + 1
         else:
             char_left = string_width - char_num_so_far
@@ -159,7 +157,7 @@ def adjust_text(string, column_width):
             end = string_width
             while length > 0:
                 if length < string_width:
-                    line.append(new_word[start : start + length])
+                    line.append(new_word[int(start):int(start + length)])
                     char_num_so_far = length + 1
                     break
                 line_to_print.append(new_word[int(start):int(end)])
@@ -174,7 +172,14 @@ def adjust_text(string, column_width):
 
 
 def get_default_console_width():
-    console_width, rows = shutil.get_terminal_size()
+    try:
+        from shutil import get_terminal_size
+        console_width, rows = shutil.get_terminal_size()
+    except Exception:
+        import termios, fcntl, struct, sys
+        s = struct.pack("HHHH", 0, 0, 0, 0)
+        x = fcntl.ioctl(sys.stdout.fileno(), termios.TIOCGWINSZ, s)
+        rows, console_width, x_pixels, y_pixels = struct.unpack("HHHH", x)
     return console_width
 
 
@@ -192,11 +197,12 @@ def format_lines_adjusted_to_console(data, options={}):
     headers_and_sizes = get_headers_and_sizes_from_data(data, headers, console_width)
     lines_to_print = []
     lines_to_print.append(format_line(headers_and_sizes, "top"))
+   
     headers_line = format_headers_line(headers_and_sizes)
     for string in headers_line:
         lines_to_print.append(string)
     lines_to_print.append(format_line(headers_and_sizes, "separator"))
-
+    
     for row in data[:-1]:
         data_line = format_data_line(row, headers_and_sizes)
         for string in data_line:

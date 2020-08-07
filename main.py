@@ -17,8 +17,8 @@ if __name__ == "__main__":
     # lines = format_lines_adjusted_to_console(data, options)
     # printer(lines)
 
-    
-    lines = format_lines_adjusted_to_console(data)
+    options = {"console_width": 32}
+    lines = format_lines_adjusted_to_console(data, options)
     printer(lines)
 
    
