@@ -49,21 +49,22 @@ def test_format_line():
         {"size": 5, "name": "name"},
         {"size": 5, "name": "email"},
     ]
-    assert format_line(headers_and_sizes, "top") == "┌─────┬─────┬─────┐"
+
+    assert format_line(headers_and_sizes, "top") == u"┌─────┬─────┬─────┐"
 
     headers_and_sizes = [
         {"size": 5, "name": "id"},
         {"size": 10, "name": "name"},
         {"size": 5, "name": "email"},
     ]
-    assert format_line(headers_and_sizes, "separator") == "├─────┼──────────┼─────┤"
+    assert format_line(headers_and_sizes, "separator") == u"├─────┼──────────┼─────┤"
 
     headers_and_sizes = [
         {"size": 5, "name": "id"},
         {"size": 10, "name": "name"},
         {"size": 5, "name": "email"},
     ]
-    assert format_line(headers_and_sizes, "bottom") == "└─────┴──────────┴─────┘"
+    assert format_line(headers_and_sizes, "bottom") == u"└─────┴──────────┴─────┘"
 
 
 def test_adjust_column_width_to_console():
@@ -149,10 +150,10 @@ def test_format_data_line():
         data, options["headers"], options["console_width"]
     )
     assert format_data_line(data[0], headers) == [
-        "│ 6018975a-dde7-4 │ Jo │ jdoe@ │",
-        "│ 666-9436-b171c5 │ nh │ examp │",
-        "│ a11dde          │ Do │ le.or │",
-        "│                 │ e  │ g     │",
+        u"│ 6018975a-dde7-4 │ Jo │ jdoe@ │",
+        u"│ 666-9436-b171c5 │ nh │ examp │",
+        u"│ a11dde          │ Do │ le.or │",
+        u"│                 │ e  │ g     │",
     ]
 
 
@@ -164,8 +165,8 @@ def test_format_text():
     ]
     substrings = [["id"], ["na", "me"], ["email"]]
     assert format_text(headers, substrings) == [
-        "│ id               │ na │ email   │",
-        "│                  │ me │         │",
+        u"│ id               │ na │ email   │",
+        u"│                  │ me │         │",
     ]
 
     headers = [
@@ -179,10 +180,10 @@ def test_format_text():
         ["jdoe@ex", "ample.o", "rg"],
     ]
     assert format_text(headers, substrings) == [
-        "│ 6018975a-dde7-46 │ Jo │ jdoe@ex │",
-        "│ 66-9436-b171c5a1 │ nh │ ample.o │",
-        "│ 1dde             │ Do │ rg      │",
-        "│                  │ e  │         │",
+        u"│ 6018975a-dde7-46 │ Jo │ jdoe@ex │",
+        u"│ 66-9436-b171c5a1 │ nh │ ample.o │",
+        u"│ 1dde             │ Do │ rg      │",
+        u"│                  │ e  │         │",
     ]
 
 
@@ -193,8 +194,8 @@ def test_format_headers_line():
         {"size": 9, "name": "email"},
     ]
     expected = [
-        "│ id               │ na │ email   │",
-        "│                  │ me │         │",
+        u"│ id               │ na │ email   │",
+        u"│                  │ me │         │",
     ]
 
     assert format_headers_line(headers) == expected

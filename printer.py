@@ -97,7 +97,6 @@ def format_headers_line(headers):
         column_width = header["size"]
         headers_row.append(adjust_text(header["name"], column_width))
     substrings = split_strings(headers_row)
-    print(substrings)
     headers_line = format_text(headers, substrings)
     return headers_line
 
@@ -216,3 +215,4 @@ def format_lines_adjusted_to_console(data, headers, options={}):
 def printer(lines):
     for line in lines:
         print(line)
+
