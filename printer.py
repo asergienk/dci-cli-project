@@ -13,19 +13,12 @@ vertical_line = u"\u2502"
 
 def get_headers_and_sizes_from_data(data, headers, console_width):
     headers_and_sizes = []
-    for item in data:
-        for key, value in item.items():
-            if key in headers:
-                size = max(map(lambda x: len(x[key]), data))
-                if len(key) > size:
-                    size = len(key)
-            else:
-                continue
-            headers_and_sizes.append({"size": size, "name": key})
-        break
-    headers_and_sizes_adjusted = adjust_column_width_to_console(
-        headers_and_sizes, console_width
-    )
+    for header in headers:
+        size = max(map(lambda x: len(x[header]), data))
+        if len(header) > size:
+            size = len(header)
+        headers_and_sizes.append({"size": size, "name": header})
+    headers_and_sizes_adjusted = adjust_column_width_to_console(headers_and_sizes, console_width)
     return headers_and_sizes_adjusted
 
 
@@ -104,6 +97,7 @@ def format_headers_line(headers):
         column_width = header["size"]
         headers_row.append(adjust_text(header["name"], column_width))
     substrings = split_strings(headers_row)
+    print(substrings)
     headers_line = format_text(headers, substrings)
     return headers_line
 
@@ -126,12 +120,13 @@ def format_text(headers, substrings):
     return final_data
 
 
+
 def _data_to_string(data):
     new_data = []
     for item in data:
-        new_data.append({k: str(v) for k, v in item.items()})
+        new_data.append({pair: str(item[pair]) for pair in item})
     return new_data
-
+    
 
 def adjust_text(string, column_width):
     string_width = column_width - 2
@@ -177,12 +172,13 @@ def get_default_console_width():
         console_width, rows = shutil.get_terminal_size()
     except Exception:
         import termios, fcntl, struct, sys
+        s = struct.pack('hh', 0, 0)
         x = fcntl.ioctl(sys.stdout.fileno(), termios.TIOCGWINSZ, s)
         rows, console_width = struct.unpack("hh", x)
     return console_width
 
 
-def format_lines_adjusted_to_console(data, options={}):
+def format_lines_adjusted_to_console(data, headers, options={}):
     if not data:
         return []
 
@@ -191,8 +187,9 @@ def format_lines_adjusted_to_console(data, options={}):
         if "console_width" in options
         else get_default_console_width()
     )
-    headers = options["headers"] if "headers" in options else data[0].keys()
+    headers = options["headers"] if "headers" in options else headers
     data = _data_to_string(data)
+
 
     headers_and_sizes = get_headers_and_sizes_from_data(data, headers, console_width)
     lines_to_print = []
