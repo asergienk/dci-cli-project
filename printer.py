@@ -13,6 +13,7 @@ vertical_line = u"\u2502"
 
 def get_headers_and_sizes_from_data(data, headers, console_width):
     headers_and_sizes = []
+    print(headers)
     for header in headers:
         size = max(map(lambda x: len(x[header]), data))
         if len(header) > size:
@@ -168,13 +169,22 @@ def adjust_text(string, column_width):
 def get_default_console_width():
     try:
         from shutil import get_terminal_size
-        console_width, rows = shutil.get_terminal_size()
-    except Exception:
+        console_width, rows = get_terminal_size()
+        return console_width
+    except ImportError:
         import termios, fcntl, struct, sys
         s = struct.pack('hh', 0, 0)
-        x = fcntl.ioctl(sys.stdout.fileno(), termios.TIOCGWINSZ, s)
-        rows, console_width = struct.unpack("hh", x)
-    return console_width
+        try:
+            x = fcntl.ioctl(sys.__stdout__.fileno(), termios.TIOCGWINSZ, s)
+            print(x)
+            rows, console_width = struct.unpack("hh", x)
+            return console_width
+        except IOError:
+            return 80
+
+
+        
+    
 
 
 def format_lines_adjusted_to_console(data, headers, options={}):
@@ -186,7 +196,9 @@ def format_lines_adjusted_to_console(data, headers, options={}):
         if "console_width" in options
         else get_default_console_width()
     )
+    print(console_width)
     headers = options["headers"] if "headers" in options else headers
+    print(headers)
     data = _data_to_string(data)
 
 
